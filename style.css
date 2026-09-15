@@ -1,0 +1,662 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #080b14;
+    --card: #111624;
+    --card2: #171d2d;
+    --gold: #ffc83d;
+    --gold2: #ff9f1c;
+    --text: #ffffff;
+    --muted: #8f9bb3;
+    --green: #35d07f;
+    --blue: #4da3ff;
+    --border: rgba(255,255,255,0.08);
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top, #202a42 0%, #0b0f1c 38%, #080b14 75%);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+button {
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+}
+
+.app {
+    width: 100%;
+    max-width: 520px;
+    min-height: 100vh;
+    margin: auto;
+    padding-bottom: 90px;
+}
+
+/* HEADER */
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 16px 10px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffd84d, #ff9f1c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    box-shadow: 0 0 25px rgba(255,190,50,0.35);
+}
+
+.brand h1 {
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.brand span {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 3px;
+}
+
+.sound-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--card);
+    color: white;
+    border: 1px solid var(--border);
+    font-size: 18px;
+}
+
+/* PLAYER */
+
+.player-card {
+    margin: 10px 16px;
+    padding: 15px;
+    background: linear-gradient(
+        135deg,
+        rgba(255,200,61,0.12),
+        rgba(77,163,255,0.08)
+    );
+    border: 1px solid var(--border);
+    border-radius: 18px;
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.player-name {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.player-id {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--green);
+    font-size: 11px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+}
+
+/* BALANCE */
+
+.balance-card {
+    text-align: center;
+    padding: 22px 15px 15px;
+}
+
+.balance-label {
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.balance {
+    margin-top: 6px;
+    font-size: 38px;
+    font-weight: 900;
+    background: linear-gradient(90deg, #ffe27a, #ffad24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.token-name {
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* LEVEL */
+
+.level-box {
+    margin: 0 16px 15px;
+}
+
+.level-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 7px;
+}
+
+.progress {
+    width: 100%;
+    height: 8px;
+    background: #202638;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--gold), var(--gold2));
+    border-radius: 20px;
+    transition: width 0.3s ease;
+}
+
+/* MINING */
+
+.mining-card {
+    margin: 15px 16px;
+    padding: 20px 15px;
+    background: rgba(17,22,36,0.92);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    text-align: center;
+}
+
+.mining-status {
+    color: var(--green);
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.shiba-button {
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    margin: 10px auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at 35% 25%, #ffe88a, #ffc83d 45%, #f28a12 100%);
+    border: 7px solid rgba(255,255,255,0.12);
+    box-shadow:
+        0 15px 50px rgba(255,173,36,0.25),
+        inset 0 0 25px rgba(255,255,255,0.25);
+    font-size: 80px;
+    transition: transform 0.08s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.shiba-button:active {
+    transform: scale(0.92);
+}
+
+.mining-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.mining-stat {
+    background: var(--card2);
+    padding: 12px;
+    border-radius: 14px;
+}
+
+.mining-stat span {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    margin-bottom: 5px;
+}
+
+.mining-stat strong {
+    font-size: 16px;
+}
+
+/* ENERGY */
+
+.energy-box {
+    margin-top: 15px;
+}
+
+.energy-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+
+.energy-row span:first-child {
+    color: #7ec8ff;
+}
+
+.energy-fill {
+    height: 7px;
+    background: #1d2738;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.energy-fill > div {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #4da3ff, #7ed6ff);
+    border-radius: 20px;
+    transition: width 0.3s ease;
+}
+
+/* SECTIONS */
+
+.section {
+    margin: 18px 16px;
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.section-title h2 {
+    font-size: 17px;
+}
+
+.section-title span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* MISSION */
+
+.mission-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    padding: 15px;
+}
+
+.mission-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.mission-title {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.mission-description {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.mission-reward {
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.mission-progress {
+    margin-top: 13px;
+    height: 7px;
+    background: #242b3c;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.mission-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--gold);
+    border-radius: 20px;
+}
+
+.claim-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 11px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #ffc83d, #ff9f1c);
+    color: #17120a;
+    font-weight: 800;
+}
+
+.claim-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* UPGRADES */
+
+.upgrade-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.upgrade-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.upgrade-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 13px;
+    background: var(--card2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.upgrade-info {
+    flex: 1;
+}
+
+.upgrade-name {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.upgrade-desc {
+    color: var(--muted);
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+.upgrade-btn {
+    padding: 9px 11px;
+    border-radius: 10px;
+    background: #252d40;
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+/* REFERRAL */
+
+.referral-card {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,200,61,0.10),
+            rgba(77,163,255,0.08)
+        );
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 16px;
+}
+
+.referral-title {
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.referral-text {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+    margin-top: 6px;
+}
+
+.ref-code-box {
+    display: flex;
+    gap: 7px;
+    margin-top: 12px;
+}
+
+.ref-code {
+    flex: 1;
+    background: #0c101b;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 11px;
+    font-size: 12px;
+    color: var(--gold);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.copy-btn {
+    padding: 0 13px;
+    border-radius: 11px;
+    background: var(--gold);
+    color: #17120a;
+    font-weight: 800;
+}
+
+.invite-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 11px;
+    background: #229ed9;
+    color: white;
+    font-weight: 800;
+}
+
+/* WALLET */
+
+.wallet-card {
+    padding: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+}
+
+.wallet-status {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 12px;
+}
+
+.wallet-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #4da3ff, #347ee8);
+    color: white;
+    font-weight: 800;
+}
+
+/* INFO */
+
+.info-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.info-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 13px;
+}
+
+.info-item span {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    margin-bottom: 5px;
+}
+
+.info-item strong {
+    font-size: 13px;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 520px;
+    height: 70px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: rgba(10,14,24,0.96);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.nav-item span:first-child {
+    font-size: 20px;
+}
+
+.nav-item.active {
+    color: var(--gold);
+}
+
+/* TOAST */
+
+.toast {
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    transform: translate(-50%, -120px);
+    min-width: 220px;
+    max-width: 90%;
+    padding: 12px 16px;
+    background: #171d2b;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-align: center;
+    font-size: 12px;
+    z-index: 1000;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.toast.show {
+    transform: translate(-50%, 0);
+    opacity: 1;
+}
+
+/* EFFECTS */
+
+.effects {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 999;
+}
+
+.coin-effect {
+    position: absolute;
+    color: var(--gold);
+    font-weight: 900;
+    font-size: 20px;
+    animation: floatUp 0.8s ease-out forwards;
+}
+
+@keyframes floatUp {
+
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-80px) scale(1.25);
+    }
+}
+
+/* MOBILE */
+
+@media (max-width: 380px) {
+
+    .shiba-button {
+        width: 165px;
+        height: 165px;
+        font-size: 70px;
+    }
+
+    .balance {
+        font-size: 32px;
+    }
+
+    .header {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .section,
+    .player-card,
+    .level-box,
+    .mining-card {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+                        }
