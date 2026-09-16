@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Baby Shiba Arena</title>
+
+    <link rel="stylesheet" href="arena.css">
+</head>
+
+<body>
+
+    <!-- =====================================
+         BABY SHIBA ARENA
+    ====================================== -->
+
+    <main class="arena">
+
+        <!-- HEADER -->
+
+        <header class="arena-header">
+
+            <div class="logo-area">
+                <h1>🐕 BABY SHIBA</h1>
+                <span>⚔️ ARENA</span>
+            </div>
+
+            <div class="test-badge">
+                TEST MODE
+            </div>
+
+        </header>
+
+
+        <!-- HERO SECTION -->
+
+        <section class="battle-area">
+
+            <!-- PLAYER -->
+
+            <div class="fighter player">
+
+                <div class="character-icon">
+                    🐕
+                </div>
+
+                <h2>Baby Shiba</h2>
+
+                <p class="level">
+                    Level 1
+                </p>
+
+                <div class="stat-label">
+                    HP
+                </div>
+
+                <div class="health-bar">
+                    <div
+                        id="player-hp-bar"
+                        class="health-fill player-hp"
+                    ></div>
+                </div>
+
+                <p id="player-hp">
+                    100 / 100
+                </p>
+
+            </div>
+
+
+            <!-- VS -->
+
+            <div class="vs">
+                VS
+            </div>
+
+
+            <!-- ENEMY -->
+
+            <div class="fighter enemy">
+
+                <div class="character-icon">
+                    🟢
+                </div>
+
+                <h2>Forest Slime</h2>
+
+                <p class="level">
+                    Level 1
+                </p>
+
+                <div class="stat-label">
+                    HP
+                </div>
+
+                <div class="health-bar">
+                    <div
+                        id="enemy-hp-bar"
+                        class="health-fill enemy-hp"
+                    ></div>
+                </div>
+
+                <p id="enemy-hp">
+                    100 / 100
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- BATTLE MESSAGE -->
+
+        <section class="battle-message">
+
+            <h2 id="battle-status">
+                Ready for Battle
+            </h2>
+
+            <p id="battle-subtitle">
+                Enter the Baby Shiba Arena
+            </p>
+
+        </section>
+
+
+        <!-- BATTLE LOG -->
+
+        <section class="battle-log-section">
+
+            <h3>⚔️ Battle Log</h3>
+
+            <div id="battle-log">
+
+                <div>
+                    Welcome to Baby Shiba Arena!
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CONTROLS -->
+
+        <section class="battle-controls">
+
+            <button
+                class="start-button"
+                onclick="startArenaBattle()"
+            >
+                ⚔️ START BATTLE
+            </button>
+
+            <button
+                class="attack-button"
+                onclick="playerAttack()"
+            >
+                🗡️ ATTACK
+            </button>
+
+            <button
+                class="reset-button"
+                onclick="resetArena()"
+            >
+                🔄 RESET
+            </button>
+
+        </section>
+
+
+        <!-- FUTURE ABILITIES -->
+
+        <section class="future-controls">
+
+            <button disabled>
+                🔥 ABILITY
+            </button>
+
+            <button disabled>
+                ☄️ ULTIMATE
+            </button>
+
+            <button disabled>
+                🛡️ DODGE
+            </button>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer>
+
+            <p>
+                Baby Shiba Inu • Arena Test V1.0
+            </p>
+
+        </footer>
+
+    </main>
+
+
+    <!-- ARENA JAVASCRIPT -->
+
+    <script src="arena.js"></script>
+
+</body>
+
+              </html>
