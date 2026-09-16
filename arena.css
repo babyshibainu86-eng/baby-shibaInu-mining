@@ -1,0 +1,465 @@
+/* =========================================
+   BABY SHIBA ARENA
+   TEST VERSION 1.0
+========================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background:
+        radial-gradient(circle at top, #315d45 0%, #13251d 45%, #07110d 100%);
+    color: #ffffff;
+}
+
+
+/* =========================================
+   MAIN ARENA
+========================================= */
+
+.arena {
+    width: 100%;
+    max-width: 900px;
+    min-height: 100vh;
+    margin: auto;
+    padding: 20px;
+    overflow: hidden;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.arena-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 18px;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+}
+
+.logo-area h1 {
+    font-size: 22px;
+}
+
+.logo-area span {
+    display: block;
+    margin-top: 4px;
+    color: #ffb13b;
+    font-weight: bold;
+}
+
+.test-badge {
+    padding: 7px 12px;
+    border-radius: 20px;
+    background: rgba(255, 177, 59, 0.15);
+    border: 1px solid rgba(255, 177, 59, 0.5);
+    color: #ffb13b;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+/* =========================================
+   BATTLE AREA
+========================================= */
+
+.battle-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+
+    min-height: 360px;
+    margin-top: 25px;
+    padding: 30px;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            rgba(20, 45, 34, 0.65),
+            rgba(7, 17, 13, 0.85)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+
+/* =========================================
+   FIGHTERS
+========================================= */
+
+.fighter {
+    width: 260px;
+    text-align: center;
+    padding: 25px 20px;
+
+    border-radius: 25px;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    backdrop-filter: blur(8px);
+
+    transition: transform 0.2s ease;
+}
+
+.fighter:hover {
+    transform: translateY(-5px);
+}
+
+.player {
+    border-color: rgba(255, 177, 59, 0.35);
+}
+
+.enemy {
+    border-color: rgba(255, 80, 80, 0.35);
+}
+
+
+/* =========================================
+   CHARACTER ICON
+========================================= */
+
+.character-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 110px;
+    height: 110px;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    font-size: 65px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 177, 59, 0.3),
+            rgba(0, 0, 0, 0.25)
+        );
+
+    border: 2px solid rgba(255, 177, 59, 0.35);
+
+    box-shadow:
+        0 0 30px rgba(255, 177, 59, 0.15);
+}
+
+
+/* =========================================
+   TEXT
+========================================= */
+
+.fighter h2 {
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.level {
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 20px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 6px;
+}
+
+
+/* =========================================
+   HEALTH BAR
+========================================= */
+
+.health-bar {
+    width: 100%;
+    height: 18px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background: rgba(0, 0, 0, 0.5);
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.health-fill {
+    height: 100%;
+    width: 100%;
+
+    border-radius: 20px;
+
+    transition:
+        width 0.35s ease,
+        background 0.35s ease;
+}
+
+.player-hp {
+    background: linear-gradient(
+        90deg,
+        #31d158,
+        #7df58d
+    );
+}
+
+.enemy-hp {
+    background: linear-gradient(
+        90deg,
+        #e63946,
+        #ff7777
+    );
+}
+
+#player-hp,
+#enemy-hp {
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+
+/* =========================================
+   VS
+========================================= */
+
+.vs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 70px;
+    height: 70px;
+
+    border-radius: 50%;
+
+    font-size: 25px;
+    font-weight: 900;
+
+    background:
+        radial-gradient(
+            circle,
+            #ffb13b,
+            #d56d16
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 0 30px rgba(255, 177, 59, 0.35);
+}
+
+
+/* =========================================
+   BATTLE MESSAGE
+========================================= */
+
+.battle-message {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.battle-message h2 {
+    font-size: 24px;
+}
+
+.battle-message p {
+    margin-top: 6px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+
+/* =========================================
+   BATTLE LOG
+========================================= */
+
+.battle-log-section {
+    margin-top: 20px;
+
+    padding: 18px;
+
+    border-radius: 20px;
+
+    background: rgba(0, 0, 0, 0.3);
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.battle-log-section h3 {
+    margin-bottom: 10px;
+}
+
+#battle-log {
+    height: 130px;
+
+    overflow-y: auto;
+
+    padding: 12px;
+
+    border-radius: 12px;
+
+    background: rgba(0, 0, 0, 0.25);
+
+    font-size: 14px;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.battle-controls,
+.future-controls {
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-top: 20px;
+}
+
+button {
+    border: none;
+
+    border-radius: 14px;
+
+    padding: 13px 20px;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+.start-button {
+    background: linear-gradient(
+        135deg,
+        #ffb13b,
+        #e06d18
+    );
+}
+
+.attack-button {
+    background: linear-gradient(
+        135deg,
+        #e63946,
+        #a91522
+    );
+}
+
+.reset-button {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.future-controls button {
+    background: rgba(255, 255, 255, 0.08);
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+footer {
+    text-align: center;
+
+    margin-top: 25px;
+
+    padding-bottom: 20px;
+
+    color: rgba(255, 255, 255, 0.45);
+
+    font-size: 12px;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .arena {
+        padding: 12px;
+    }
+
+    .arena-header {
+        padding: 12px;
+    }
+
+    .logo-area h1 {
+        font-size: 17px;
+    }
+
+    .battle-area {
+        flex-direction: column;
+        padding: 20px;
+        min-height: auto;
+    }
+
+    .fighter {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .vs {
+        width: 60px;
+        min-width: 60px;
+        height: 60px;
+        font-size: 20px;
+    }
+
+    .character-icon {
+        width: 90px;
+        height: 90px;
+        font-size: 52px;
+    }
+
+    .battle-message h2 {
+        font-size: 20px;
+    }
+
+    button {
+        width: 100%;
+        max-width: 320px;
+    }
+  }
