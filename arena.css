@@ -827,3 +827,25 @@ footer {
         min-width: 0;
     }
 }
+/* ==========================================
+   FOREST SLIME POSITION FIX
+   ========================================== */
+
+.enemy-character {
+    position: relative !important;
+    top: 0 !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+
+    transform: none;
+    margin: 0 auto 20px auto;
+    z-index: 5;
+}
+
+.enemy-hp {
+    position: relative !important;
+    transform: none !important;
+    top: auto !important;
+    bottom: auto !important;
+   }
