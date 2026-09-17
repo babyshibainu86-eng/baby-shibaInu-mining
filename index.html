@@ -687,59 +687,39 @@
         <!-- BOTTOM NAVIGATION -->
         <!-- ============================= -->
 
-        <nav class="bottom-nav">
+    <div class="bottom-nav">
 
-            <button class="nav-item active"
-                    data-page="miningPage">
+  <button class="nav-item active" onclick="showPage('miningPage')">
+    <span>⛏️</span>
+    <small>Mining</small>
+  </button>
 
-                <span>⛏️</span>
-                <small>Mining</small>
+  <button class="nav-item" onclick="showPage('itemsPage')">
+    <span>🎒</span>
+    <small>Items</small>
+  </button>
 
-            </button>
+  <button class="nav-item" onclick="showPage('shopPage')">
+    <span>🛒</span>
+    <small>Shop</small>
+  </button>
 
-            <button class="nav-item"
-                    data-page="itemsPage">
+  <button class="nav-item" onclick="showPage('vipPage')">
+    <span>👑</span>
+    <small>VIP</small>
+  </button>
 
-                <span>🎒</span>
-                <small>Items</small>
+  <button class="nav-item" onclick="showPage('friendsPage')">
+    <span>👥</span>
+    <small>Friends</small>
+  </button>
 
-            </button>
+  <button class="nav-item" onclick="showPage('arenaPage')">
+    <span>⚔️</span>
+    <small>Arena</small>
+  </button>
 
-            <button class="nav-item"
-                    data-page="shopPage">
-
-                <span>🛒</span>
-                <small>Shop</small>
-
-            </button>
-
-            <button class="nav-item"
-                    data-page="vipPage">
-
-                <span>👑</span>
-                <small>VIP</small>
-
-            </button>
-
-            <button class="nav-item"
-                    data-page="friendsPage">
-
-                <span>👥</span>
-                <small>Friends</small>
-
-            </button>
-
-            <button class="nav-item"
-                    data-page="arenaPage">
-
-                <span>⚔️</span>
-                <small>Arena</small>
-
-            </button>
-
-        </nav>
-
-    </main>
+    </div>
 
 
     <!-- ============================= -->
