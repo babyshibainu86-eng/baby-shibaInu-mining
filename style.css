@@ -406,30 +406,21 @@ button {
    ========================================== */
 
 .mining-card {
-        );
-   .shiba-button {
-    width: 210px;
-    height: 210px;
-    padding: 0;
-    margin: 20px auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    box-sizing: border-box;
-}
+    padding: 18px;
+    margin-bottom: 12px;
 
-.shiba-button img {
-    display: block;
-    width: 150px !important;
-    height: 150px !important;
-    max-width: 150px !important;
-    max-height: 150px !important;
-    min-width: 0 !important;
-    min-height: 0 !important;
-    object-fit: contain;
-    object-position: center;
-    margin: 0;
+    text-align: center;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 190, 40, 0.08),
+            rgba(255, 255, 255, 0.025)
+        );
+
+    border: 1px solid rgba(255, 190, 40, 0.12);
 }
 
 .mining-status {
@@ -451,6 +442,9 @@ button {
     width: 210px;
     height: 210px;
 
+    padding: 0;
+    margin: 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -469,13 +463,23 @@ button {
 }
 
 .shiba-button img {
+    display: block;
+
     width: 100%;
     height: 100%;
+
+    max-width: 100%;
+    max-height: 100%;
+
     object-fit: contain;
+    object-position: center;
+
+    margin: 0;
 }
 
 .shiba-button:active {
     transform: scale(0.91);
+
     filter:
         drop-shadow(0 7px 15px rgba(0, 0, 0, 0.5))
         drop-shadow(0 0 35px rgba(255, 176, 0, 0.45));
@@ -500,6 +504,7 @@ button {
     padding: 12px;
 
     border-radius: 14px;
+
     background: rgba(255, 255, 255, 0.035);
 }
 
@@ -514,8 +519,7 @@ button {
 .mining-stat strong {
     color: #ffffff;
     font-size: 14px;
-}
-
+   }
 /* ==========================================
    ENERGY
    ========================================== */
