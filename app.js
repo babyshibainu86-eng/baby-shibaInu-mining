@@ -5,6 +5,74 @@
 
 const tg = window.Telegram?.WebApp || null;
 
+if (tg) {
+    tg.ready();
+    tg.expand();
+}
+
+const SUPABASE_FUNCTION_URL =
+    "https://xtfleiaormhmbzwurqoi.supabase.co/functions/v1/bright-endpoint";
+
+async function connectTelegramUser() {
+
+    if (!tg || !tg.initData) {
+        console.log("Telegram initData not available");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            SUPABASE_FUNCTION_URL,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    initData: tg.initData
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        console.log("Server user:", data);
+
+        if (data.success && data.user) {
+
+            game.balance = Number(data.user.balance);
+            game.totalMined = Number(data.user.total_mined);
+            game.level = Number(data.user.level);
+            game.xp = Number(data.user.xp);
+            game.tapPower = Number(data.user.tap_power);
+            game.energy = Number(data.user.energy);
+            game.maxEnergy = Number(data.user.max_energy);
+            game.mineRate = Number(data.user.mine_rate);
+            game.tapLevel = Number(data.user.tap_level);
+            game.energyLevel = Number(data.user.energy_level);
+            game.boostLevel = Number(data.user.boost_level);
+            game.missionProgress =
+                Number(data.user.mission_progress);
+            game.missionClaimed =
+                Boolean(data.user.mission_claimed);
+            game.sound =
+                Boolean(data.user.sound);
+
+            saveGame();
+            render();
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Telegram connection error:",
+            error
+        );
+
+    }
+                }
+
 let telegramUser = null;
 
 // ==========================================
@@ -79,7 +147,7 @@ const defaultState = {
 
 let game = loadGame();
 
-
+connectTelegramUser();
 // ==========================================
 // LOCAL STORAGE - PER TELEGRAM USER
 // ==========================================
