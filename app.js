@@ -79,16 +79,31 @@ const defaultState = {
 
 let game = loadGame();
 
+
 // ==========================================
-// LOCAL STORAGE
+// LOCAL STORAGE - PER TELEGRAM USER
 // ==========================================
+
+function getGameStorageKey() {
+
+    if (user.id) {
+
+        return "babyShibaGame_" + user.id;
+
+    }
+
+    return "babyShibaGame_GUEST";
+
+}
 
 function loadGame() {
 
     try {
 
         const saved =
-            localStorage.getItem("babyShibaGame");
+            localStorage.getItem(
+                getGameStorageKey()
+            );
 
         if (saved) {
 
@@ -114,7 +129,7 @@ function saveGame() {
     try {
 
         localStorage.setItem(
-            "babyShibaGame",
+            getGameStorageKey(),
             JSON.stringify(game)
         );
 
@@ -123,7 +138,7 @@ function saveGame() {
         console.log("Save error:", error);
 
     }
-}
+            }
 
 // ==========================================
 // PAGE SYSTEM
