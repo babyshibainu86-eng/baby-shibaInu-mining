@@ -478,14 +478,15 @@ outline: none;
     margin: 0;
 }
 
-.shiba-button:active {
-    transform: scale(0.91);
-
-    filter:
-        drop-shadow(0 7px 15px rgba(0, 0, 0, 0.5))
-        drop-shadow(0 0 35px rgba(255, 176, 0, 0.45));
+.shiba-button:active,
+.shiba-button:focus,
+.shiba-button:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-focus-ring-color: transparent !important;
 }
-
 .tap-hint {
     color: #9999a0;
     font-size: 10px;
