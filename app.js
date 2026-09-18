@@ -147,7 +147,6 @@ const defaultState = {
 
 let game = loadGame();
 loadGameFromTelegram();
-connectTelegramUser();
 async function saveUserToServer() {
 
     if (!tg || !tg.initData) {
