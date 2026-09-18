@@ -1442,7 +1442,9 @@ function setupButtons() {
 // INITIALIZE
 // ==========================================
 
-function initApp() {
+async function initApp() {
+
+    await loadGameFromTelegram();
 
     updatePlayerInfo();
 
