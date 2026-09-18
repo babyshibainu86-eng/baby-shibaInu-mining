@@ -1475,3 +1475,15 @@ document.addEventListener(
     "DOMContentLoaded",
     initApp
 );
+document.addEventListener(
+    "visibilitychange",
+    function() {
+
+        if (document.visibilityState === "hidden") {
+
+            saveGame();
+
+        }
+
+    }
+);
