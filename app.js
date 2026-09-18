@@ -1325,7 +1325,32 @@ function setupButtons() {
     const upgradeBoostButton =
         document.getElementById(
             "upgradeBoost"
-        );
+        );if (upgradeTapButton) {
+
+    upgradeTapButton.addEventListener(
+        "click",
+        upgradeTap
+    );
+
+}
+
+if (upgradeEnergyButton) {
+
+    upgradeEnergyButton.addEventListener(
+        "click",
+        upgradeEnergy
+    );
+
+}
+
+if (upgradeBoostButton) {
+
+    upgradeBoostButton.addEventListener(
+        "click",
+        upgradeBoost
+    );
+
+        }
 
     const copyRefButton =
         document.getElementById(
