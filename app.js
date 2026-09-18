@@ -776,8 +776,6 @@ console.log(
 
     }
 
-}
-
 // ==========================================
 // MINING
 // ==========================================
@@ -794,8 +792,12 @@ function mine() {
 
     }
 
+
     const amount =
-        game.tapPower;
+        game.tapPower +
+        game.mineRate -
+        1;
+
 
     game.balance += amount;
 
@@ -809,6 +811,7 @@ function mine() {
 
     createCoinEffect(amount);
 
+
     if (tg && tg.HapticFeedback) {
 
         tg.HapticFeedback.impactOccurred(
@@ -816,6 +819,7 @@ function mine() {
         );
 
     }
+
 
     saveGame();
 
