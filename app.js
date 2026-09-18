@@ -242,17 +242,46 @@ function saveGame() {
 
     try {
 
-        localStorage.setItem(
-            getGameStorageKey(),
-            JSON.stringify(game)
-        );
+        if (
+            window.Telegram &&
+            Telegram.WebApp &&
+            Telegram.WebApp.CloudStorage
+        ) {
+
+            Telegram.WebApp.CloudStorage.setItem(
+                "game",
+                JSON.stringify(game),
+                function(error) {
+
+                    if (error) {
+                        console.log(
+                            "Telegram CloudStorage save error:",
+                            error
+                        );
+                    }
+
+                }
+            );
+
+        } else {
+
+            localStorage.setItem(
+                "babyShibaGame_GUEST",
+                JSON.stringify(game)
+            );
+
+        }
 
     } catch (error) {
 
-        console.log("Save error:", error);
+        console.log(
+            "Save error:",
+            error
+        );
 
     }
-            }
+
+}
 
 // ==========================================
 // PAGE SYSTEM
