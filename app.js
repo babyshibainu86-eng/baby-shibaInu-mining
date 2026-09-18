@@ -4,7 +4,8 @@
 // ==========================================
 
 const tg = window.Telegram?.WebApp || null;
-
+let saveInProgress = false;
+let savePending = false;
 if (tg) {
     tg.ready();
     tg.expand();
@@ -240,6 +241,14 @@ function loadGame() {
 }
 function saveGame() {
 
+    if (saveInProgress) {
+
+        savePending = true;
+
+        return;
+
+    }
+
     try {
 
         const storage =
@@ -250,17 +259,25 @@ function saveGame() {
         if (!storage) {
 
             console.log(
-                "❌ Telegram CloudStorage is NOT available"
+                "❌ Telegram CloudStorage unavailable"
             );
 
             return;
 
         }
 
+        saveInProgress = true;
+        savePending = false;
+
+        const data =
+            JSON.stringify(game);
+
         storage.setItem(
             "game",
-            JSON.stringify(game),
+            data,
             function(error, success) {
+
+                saveInProgress = false;
 
                 if (error) {
 
@@ -269,18 +286,27 @@ function saveGame() {
                         error
                     );
 
-                    return;
+                } else {
+
+                    console.log(
+                        "✅ Latest game saved:",
+                        success
+                    );
+
                 }
 
-                console.log(
-                    "✅ CloudStorage saved:",
-                    success
-                );
+                if (savePending) {
+
+                    saveGame();
+
+                }
 
             }
         );
 
     } catch (error) {
+
+        saveInProgress = false;
 
         console.log(
             "❌ Save exception:",
@@ -289,7 +315,7 @@ function saveGame() {
 
     }
 
-    }
+}
 async function loadGameFromTelegram() {
 
     return new Promise((resolve) => {
