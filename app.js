@@ -149,53 +149,6 @@ const defaultState = {
 let game = {
     ...defaultState
 };
-
-async function saveUserToServer() {
-
-    if (!tg || !tg.initData) {
-        return;
-    }
-
-    try {
-
-        await fetch(
-            SUPABASE_FUNCTION_URL,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    initData: tg.initData,
-                    game: {
-                        balance: game.balance,
-                        total_mined: game.totalMined,
-                        level: game.level,
-                        xp: game.xp,
-                        tap_power: game.tapPower,
-                        energy: game.energy,
-                        max_energy: game.maxEnergy,
-                        mine_rate: game.mineRate,
-                        tap_level: game.tapLevel,
-                        energy_level: game.energyLevel,
-                        boost_level: game.boostLevel,
-                        mission_progress: game.missionProgress,
-                        mission_claimed: game.missionClaimed,
-                        sound: game.sound
-                    }
-                })
-            }
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Server save error:",
-            error
-        );
-
-    }
-                }
 // ==========================================
 // LOCAL STORAGE - PER TELEGRAM USER
 // ==========================================
