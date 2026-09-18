@@ -1292,6 +1292,7 @@ function createCoinEffect(amount) {
 }
 
 // ==========================================
+// ==========================================
 // BUTTONS
 // ==========================================
 
@@ -1325,52 +1326,12 @@ function setupButtons() {
     const upgradeBoostButton =
         document.getElementById(
             "upgradeBoost"
-        );if (upgradeTapButton) {
-
-    upgradeTapButton.addEventListener(
-        "click",
-        upgradeTap
-    );
-
-}
-
-if (upgradeEnergyButton) {
-
-    upgradeEnergyButton.addEventListener(
-        "click",
-        upgradeEnergy
-    );
-
-}
-
-if (upgradeBoostButton) {
-
-    upgradeBoostButton.addEventListener(
-        "click",
-        upgradeBoost
-    );
-
-        }
-
-    const copyRefButton =
-        document.getElementById(
-            "copyRef"
         );
 
-    const inviteButton =
-        document.getElementById(
-            "inviteBtn"
-        );
 
-    const claimMissionButton =
-        document.getElementById(
-            "claimMission"
-        );
-
-    const walletButton =
-        document.getElementById(
-            "walletBtn"
-        );
+    // ==========================================
+    // START GAME
+    // ==========================================
 
     if (startButton) {
 
@@ -1381,6 +1342,11 @@ if (upgradeBoostButton) {
 
     }
 
+
+    // ==========================================
+    // MINING
+    // ==========================================
+
     if (mineButton) {
 
         mineButton.addEventListener(
@@ -1389,6 +1355,11 @@ if (upgradeBoostButton) {
         );
 
     }
+
+
+    // ==========================================
+    // SOUND
+    // ==========================================
 
     if (soundButton) {
 
@@ -1399,6 +1370,11 @@ if (upgradeBoostButton) {
 
     }
 
+
+    // ==========================================
+    // UPGRADE TAP
+    // ==========================================
+
     if (upgradeTapButton) {
 
         upgradeTapButton.addEventListener(
@@ -1407,6 +1383,11 @@ if (upgradeBoostButton) {
         );
 
     }
+
+
+    // ==========================================
+    // UPGRADE ENERGY
+    // ==========================================
 
     if (upgradeEnergyButton) {
 
@@ -1417,6 +1398,11 @@ if (upgradeBoostButton) {
 
     }
 
+
+    // ==========================================
+    // UPGRADE BOOST
+    // ==========================================
+
     if (upgradeBoostButton) {
 
         upgradeBoostButton.addEventListener(
@@ -1425,6 +1411,54 @@ if (upgradeBoostButton) {
         );
 
     }
+
+
+    // ==========================================
+    // SHOP - ENERGY PACK
+    // ==========================================
+
+    const buyEnergyPackButton =
+        document.getElementById(
+            "buyEnergyPack"
+        );
+
+    if (buyEnergyPackButton) {
+
+        buyEnergyPackButton.addEventListener(
+            "click",
+            buyEnergyPack
+        );
+
+    }
+
+
+    // ==========================================
+    // SHOP - MINING BOOST
+    // ==========================================
+
+    const buyMiningBoostButton =
+        document.getElementById(
+            "buyMiningBoost"
+        );
+
+    if (buyMiningBoostButton) {
+
+        buyMiningBoostButton.addEventListener(
+            "click",
+            buyMiningBoost
+        );
+
+    }
+
+
+    // ==========================================
+    // COPY REFERRAL
+    // ==========================================
+
+    const copyRefButton =
+        document.getElementById(
+            "copyRef"
+        );
 
     if (copyRefButton) {
 
@@ -1435,6 +1469,16 @@ if (upgradeBoostButton) {
 
     }
 
+
+    // ==========================================
+    // INVITE FRIENDS
+    // ==========================================
+
+    const inviteButton =
+        document.getElementById(
+            "inviteBtn"
+        );
+
     if (inviteButton) {
 
         inviteButton.addEventListener(
@@ -1444,6 +1488,16 @@ if (upgradeBoostButton) {
 
     }
 
+
+    // ==========================================
+    // CLAIM MISSION
+    // ==========================================
+
+    const claimMissionButton =
+        document.getElementById(
+            "claimMission"
+        );
+
     if (claimMissionButton) {
 
         claimMissionButton.addEventListener(
@@ -1452,6 +1506,16 @@ if (upgradeBoostButton) {
         );
 
     }
+
+
+    // ==========================================
+    // WALLET
+    // ==========================================
+
+    const walletButton =
+        document.getElementById(
+            "walletBtn"
+        );
 
     if (walletButton) {
 
@@ -1463,7 +1527,6 @@ if (upgradeBoostButton) {
     }
 
 }
-
 // ==========================================
 // INITIALIZE
 // ==========================================
