@@ -1292,7 +1292,71 @@ function createCoinEffect(amount) {
 }
 
 // ==========================================
+// SHOP PURCHASES
 // ==========================================
+
+function buyEnergyPack() {
+
+    const cost = 250;
+
+    if (game.balance < cost) {
+
+        showToast(
+            "❌ Not enough BSHIB"
+        );
+
+        return;
+
+    }
+
+    game.balance -= cost;
+
+    game.energy =
+        Math.min(
+            game.energy + 500,
+            game.maxEnergy
+        );
+
+    saveGame();
+
+    updateUI();
+
+    showToast(
+        "⚡ +500 Energy!"
+    );
+
+}
+
+
+function buyMiningBoost() {
+
+    const cost = 500;
+
+    if (game.balance < cost) {
+
+        showToast(
+            "❌ Not enough BSHIB"
+        );
+
+        return;
+
+    }
+
+    game.balance -= cost;
+
+    game.mineRate += 1;
+
+    saveGame();
+
+    updateUI();
+
+    showToast(
+        "🚀 Mining Boost +1!"
+    );
+
+}
+
+
 // ==========================================
 // BUTTONS
 // ==========================================
@@ -1327,6 +1391,36 @@ function setupButtons() {
     const upgradeBoostButton =
         document.getElementById(
             "upgradeBoost"
+        );
+
+    const buyEnergyPackButton =
+        document.getElementById(
+            "buyEnergyPack"
+        );
+
+    const buyMiningBoostButton =
+        document.getElementById(
+            "buyMiningBoost"
+        );
+
+    const copyRefButton =
+        document.getElementById(
+            "copyRef"
+        );
+
+    const inviteButton =
+        document.getElementById(
+            "inviteBtn"
+        );
+
+    const claimMissionButton =
+        document.getElementById(
+            "claimMission"
+        );
+
+    const walletButton =
+        document.getElementById(
+            "walletBtn"
         );
 
 
@@ -1415,13 +1509,8 @@ function setupButtons() {
 
 
     // ==========================================
-    // SHOP - ENERGY PACK
+    // SHOP ENERGY PACK
     // ==========================================
-
-    const buyEnergyPackButton =
-        document.getElementById(
-            "buyEnergyPack"
-        );
 
     if (buyEnergyPackButton) {
 
@@ -1434,13 +1523,8 @@ function setupButtons() {
 
 
     // ==========================================
-    // SHOP - MINING BOOST
+    // SHOP MINING BOOST
     // ==========================================
-
-    const buyMiningBoostButton =
-        document.getElementById(
-            "buyMiningBoost"
-        );
 
     if (buyMiningBoostButton) {
 
@@ -1456,11 +1540,6 @@ function setupButtons() {
     // COPY REFERRAL
     // ==========================================
 
-    const copyRefButton =
-        document.getElementById(
-            "copyRef"
-        );
-
     if (copyRefButton) {
 
         copyRefButton.addEventListener(
@@ -1474,11 +1553,6 @@ function setupButtons() {
     // ==========================================
     // INVITE FRIENDS
     // ==========================================
-
-    const inviteButton =
-        document.getElementById(
-            "inviteBtn"
-        );
 
     if (inviteButton) {
 
@@ -1494,11 +1568,6 @@ function setupButtons() {
     // CLAIM MISSION
     // ==========================================
 
-    const claimMissionButton =
-        document.getElementById(
-            "claimMission"
-        );
-
     if (claimMissionButton) {
 
         claimMissionButton.addEventListener(
@@ -1512,11 +1581,6 @@ function setupButtons() {
     // ==========================================
     // WALLET
     // ==========================================
-
-    const walletButton =
-        document.getElementById(
-            "walletBtn"
-        );
 
     if (walletButton) {
 
