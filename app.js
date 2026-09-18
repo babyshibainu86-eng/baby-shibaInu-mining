@@ -145,7 +145,10 @@ const defaultState = {
     sound: true
 };
 
-let game = loadGame();
+let game = {
+    ...defaultState
+};
+
 loadGameFromTelegram();
 async function saveUserToServer() {
 
