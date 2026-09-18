@@ -255,10 +255,18 @@ function saveGame() {
                 function(error) {
 
                     if (error) {
+
                         console.log(
                             "Telegram CloudStorage save error:",
                             error
                         );
+
+                    } else {
+
+                        console.log(
+                            "✅ Game saved to Telegram CloudStorage"
+                        );
+
                     }
 
                 }
