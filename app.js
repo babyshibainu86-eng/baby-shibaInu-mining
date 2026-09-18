@@ -238,54 +238,69 @@ function loadGame() {
         ...defaultState
     };
 }
-
 function saveGame() {
 
     try {
 
-        if (
+        const storage =
             window.Telegram &&
             Telegram.WebApp &&
-            Telegram.WebApp.CloudStorage
-        ) {
+            Telegram.WebApp.CloudStorage;
 
-            Telegram.WebApp.CloudStorage.setItem(
-                "game",
-                JSON.stringify(game),
-                function(error) {
+        if (!storage) {
 
-                    if (error) {
-
-                        console.log(
-                            "Telegram CloudStorage save error:",
-                            error
-                        );
-
-                    } else {
-
-                        console.log(
-                            "✅ Game saved to Telegram CloudStorage"
-                        );
-
-                    }
-
-                }
+            console.log(
+                "❌ Telegram CloudStorage is NOT available"
             );
 
-        } else {
-
-            localStorage.setItem(
-                "babyShibaGame_GUEST",
-                JSON.stringify(game)
+            showToast(
+                "❌ Telegram CloudStorage unavailable"
             );
+
+            return;
 
         }
+
+        storage.setItem(
+            "game",
+            JSON.stringify(game),
+            function(error, success) {
+
+                if (error) {
+
+                    console.log(
+                        "❌ CloudStorage save error:",
+                        error
+                    );
+
+                    showToast(
+                        "❌ Save failed"
+                    );
+
+                    return;
+                }
+
+                console.log(
+                    "✅ CloudStorage saved:",
+                    success
+                );
+
+                showToast(
+                    "☁️ Game Saved"
+                );
+
+            }
+        );
 
     } catch (error) {
 
         console.log(
-            "Save error:",
+            "❌ Save exception:",
             error
+        );
+
+        showToast(
+            "❌ Save error"
         );
 
     }
