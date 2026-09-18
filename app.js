@@ -253,10 +253,6 @@ function saveGame() {
                 "❌ Telegram CloudStorage is NOT available"
             );
 
-            showToast(
-                "❌ Telegram CloudStorage unavailable"
-            );
-
             return;
 
         }
@@ -273,20 +269,12 @@ function saveGame() {
                         error
                     );
 
-                    showToast(
-                        "❌ Save failed"
-                    );
-
                     return;
                 }
 
                 console.log(
                     "✅ CloudStorage saved:",
                     success
-                );
-
-                showToast(
-                    "☁️ Game Saved"
                 );
 
             }
@@ -299,13 +287,9 @@ function saveGame() {
             error
         );
 
-        showToast(
-            "❌ Save error"
-        );
-
     }
 
-}
+    }
 async function loadGameFromTelegram() {
 
     return new Promise((resolve) => {
