@@ -299,6 +299,11 @@ async function loadGameFromTelegram() {
             !Telegram.WebApp ||
             !Telegram.WebApp.CloudStorage
         ) {
+
+            console.log(
+                "❌ Telegram CloudStorage unavailable"
+            );
+
             resolve(false);
             return;
         }
@@ -310,7 +315,7 @@ async function loadGameFromTelegram() {
                 if (error) {
 
                     console.log(
-                        "Telegram CloudStorage load error:",
+                        "❌ CloudStorage load error:",
                         error
                     );
 
@@ -318,17 +323,20 @@ async function loadGameFromTelegram() {
                     return;
                 }
 
+                console.log(
+                    "☁️ CloudStorage data:",
+                    value
+                );
+
                 if (!value) {
 
                     console.log(
-                        "New Telegram player"
+                        "🆕 New Telegram player"
                     );
 
                     game = {
                         ...defaultState
                     };
-
-                    render();
 
                     resolve(true);
                     return;
@@ -336,34 +344,38 @@ async function loadGameFromTelegram() {
 
                 try {
 
+                    const savedGame =
+                        JSON.parse(value);
+
                     game = {
                         ...defaultState,
-                        ...JSON.parse(value)
+                        ...savedGame
                     };
 
                     console.log(
-                        "Telegram game loaded"
+                        "✅ Game loaded:",
+                        game
                     );
 
-                    render();
+                    resolve(true);
 
                 } catch (error) {
 
                     console.log(
-                        "Game data error:",
+                        "❌ Game data error:",
                         error
                     );
 
-                }
+                    resolve(false);
 
-                resolve(true);
+                }
 
             }
         );
 
     });
 
-    }
+}
 // ==========================================
 // PAGE SYSTEM
 // ==========================================
@@ -772,7 +784,12 @@ function addXP(amount) {
         game.xp -= required;
 
         game.level++;
+saveGame();
 
+console.log(
+    "💾 Level saved:",
+    game.level
+);
         showToast(
             "🎉 Level Up! Level " +
             game.level
@@ -826,7 +843,6 @@ function mine() {
     updateUI();
 
 }
-saveUserToServer();
 // ==========================================
 // AUTO MINING
 // ==========================================
