@@ -146,7 +146,7 @@ const defaultState = {
 };
 
 let game = loadGame();
-
+loadGameFromTelegram();
 connectTelegramUser();
 async function saveUserToServer() {
 
@@ -282,7 +282,80 @@ function saveGame() {
     }
 
 }
+async function loadGameFromTelegram() {
 
+    return new Promise((resolve) => {
+
+        if (
+            !window.Telegram ||
+            !Telegram.WebApp ||
+            !Telegram.WebApp.CloudStorage
+        ) {
+            resolve(false);
+            return;
+        }
+
+        Telegram.WebApp.CloudStorage.getItem(
+            "game",
+            function(error, value) {
+
+                if (error) {
+
+                    console.log(
+                        "Telegram CloudStorage load error:",
+                        error
+                    );
+
+                    resolve(false);
+                    return;
+                }
+
+                if (!value) {
+
+                    console.log(
+                        "New Telegram player"
+                    );
+
+                    game = {
+                        ...defaultState
+                    };
+
+                    render();
+
+                    resolve(true);
+                    return;
+                }
+
+                try {
+
+                    game = {
+                        ...defaultState,
+                        ...JSON.parse(value)
+                    };
+
+                    console.log(
+                        "Telegram game loaded"
+                    );
+
+                    render();
+
+                } catch (error) {
+
+                    console.log(
+                        "Game data error:",
+                        error
+                    );
+
+                }
+
+                resolve(true);
+
+            }
+        );
+
+    });
+
+    }
 // ==========================================
 // PAGE SYSTEM
 // ==========================================
