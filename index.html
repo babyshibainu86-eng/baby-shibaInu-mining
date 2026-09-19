@@ -402,24 +402,12 @@
 
 
         <!-- ============================= -->
-        <!-- =========================
-     VIP PAGE
-========================= -->
+        
+     <section id="vipPage" class="page game-page">
 
-<section id="vipPage" class="page game-page">
-
-    <div class="vip-page-header">
-
-        <div class="vip-header-crown">
-            👑
-        </div>
-
-        <h2>Baby Shiba VIP</h2>
-
-        <p>
-            Unlock exclusive mining benefits
-        </p>
-
+    <div class="page-header">
+        <h2>👑 Baby Shiba VIP</h2>
+        <p>Unlock more mining power and rewards</p>
     </div>
 
 
@@ -427,93 +415,102 @@
 
     <div class="vip-current-box">
 
-        <div class="vip-current-top">
-
-            <div>
-
-                <span class="vip-small-label">
-                    CURRENT MEMBERSHIP
-                </span>
-
-                <h2 id="vipLevel">
-                    VIP 0
-                </h2>
-
-                <p id="vipLevelName">
-                    Free Member
-                </p>
-
-            </div>
-
-            <div class="vip-current-icon">
-                👑
-            </div>
-
+        <div class="vip-current-icon">
+            👑
         </div>
 
+        <div class="vip-current-info">
 
-        <div class="vip-current-stats">
+            <span class="vip-current-label">
+                Current Membership
+            </span>
 
-            <div class="vip-stat">
+            <strong id="vipCurrentName">
+                Free Member
+            </strong>
 
-                <span>🚀 Mining</span>
-
-                <strong id="vipMiningBonus">
-                    +0%
-                </strong>
-
-            </div>
-
-
-            <div class="vip-stat">
-
-                <span>⚡ Energy</span>
-
-                <strong id="vipEnergyBonus">
-                    +0
-                </strong>
-
-            </div>
-
-
-            <div class="vip-stat">
-
-                <span>🎁 Daily</span>
-
-                <strong id="vipDailyReward">
-                    Locked
-                </strong>
-
-            </div>
+            <span id="vipLevel">
+                VIP 0
+            </span>
 
         </div>
-
-
-        <button
-            id="claimVipReward"
-            class="vip-reward-btn"
-            disabled>
-
-            🔒 VIP Reward Locked
-
-        </button>
 
     </div>
 
 
-    <!-- VIP LEVELS -->
+    <!-- VIP STATS -->
 
-    <div class="vip-title-row">
+    <div class="vip-stats">
 
-        <div>
+        <div class="vip-stat">
 
-            <h3>VIP Membership</h3>
+            <span>⛏️</span>
 
-            <p>
-                Choose your VIP level
-            </p>
+            <small>
+                Mining Bonus
+            </small>
+
+            <strong id="vipMiningBonus">
+                +0%
+            </strong>
 
         </div>
+
+
+        <div class="vip-stat">
+
+            <span>⚡</span>
+
+            <small>
+                Energy Bonus
+            </small>
+
+            <strong id="vipEnergyBonus">
+                +0
+            </strong>
+
+        </div>
+
+
+        <div class="vip-stat">
+
+            <span>🎁</span>
+
+            <small>
+                Daily Reward
+            </small>
+
+            <strong id="vipDailyReward">
+                Locked
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- DAILY REWARD -->
+
+    <button
+        id="claimVipReward"
+        class="vip-reward-btn"
+        disabled
+    >
+        🔒 VIP Reward Locked
+    </button>
+
+
+    <!-- VIP MEMBERSHIP -->
+
+    <div class="vip-section-title">
+
+        <h3>
+            VIP Membership
+        </h3>
+
+        <p>
+            Upgrade your Baby Shiba journey
+        </p>
 
     </div>
 
@@ -523,17 +520,22 @@
 
         <!-- VIP 0 -->
 
-        <div class="vip-card vip-card-free">
+        <div
+            class="vip-level-card current-vip"
+            data-vip-level="0"
+        >
 
             <div class="vip-card-top">
 
-                <div class="vip-card-badge">
-                    👑
+                <div class="vip-card-icon">
+                    🆓
                 </div>
 
-                <div class="vip-card-title">
+                <div>
 
-                    <h3>VIP 0</h3>
+                    <h3>
+                        VIP 0
+                    </h3>
 
                     <span>
                         Free Member
@@ -541,274 +543,309 @@
 
                 </div>
 
-                <div class="vip-card-status active">
-                    ACTIVE
-                </div>
-
             </div>
 
 
-            <div class="vip-card-divider"></div>
-
-
-            <div class="vip-card-benefits">
+            <div class="vip-benefits">
 
                 <div>
-                    🚀
-                    <span>Mining Bonus</span>
+                    ⛏️ Mining
                     <strong>+0%</strong>
                 </div>
 
                 <div>
-                    ⚡
-                    <span>Energy Bonus</span>
+                    ⚡ Energy
                     <strong>+0</strong>
                 </div>
 
                 <div>
-                    🎁
-                    <span>Daily Reward</span>
+                    🎁 Daily
                     <strong>Locked</strong>
                 </div>
 
             </div>
+
+
+            <button
+                class="vip-buy-btn"
+                disabled
+            >
+                ✅ Current
+            </button>
 
         </div>
 
 
         <!-- VIP 1 -->
 
-        <div class="vip-card">
+        <div
+            class="vip-level-card"
+            data-vip-level="1"
+        >
 
             <div class="vip-card-top">
 
-                <div class="vip-card-badge">
-                    👑
+                <div class="vip-card-icon">
+                    🥉
                 </div>
 
-                <div class="vip-card-title">
+                <div>
 
-                    <h3>VIP 1</h3>
+                    <h3>
+                        VIP 1
+                    </h3>
 
                     <span>
-                        Starter VIP
+                        Starter
                     </span>
 
                 </div>
 
-                <div class="vip-card-status locked">
-                    🔒
-                </div>
-
             </div>
 
 
-            <div class="vip-card-divider"></div>
-
-
-            <div class="vip-card-benefits">
+            <div class="vip-benefits">
 
                 <div>
-                    🚀
-                    <span>Mining Bonus</span>
+                    ⛏️ Mining
                     <strong>+10%</strong>
                 </div>
 
                 <div>
-                    ⚡
-                    <span>Energy Bonus</span>
+                    ⚡ Energy
                     <strong>+100</strong>
                 </div>
 
                 <div>
-                    🎁
-                    <span>Daily Reward</span>
+                    🎁 Daily
                     <strong>500 BSHIB</strong>
                 </div>
 
             </div>
+
+
+            <div class="vip-price">
+                10,000 BSHIB
+            </div>
+
+
+            <button
+                class="vip-buy-btn"
+                data-vip-level="1"
+            >
+                👑 Activate VIP 1
+            </button>
 
         </div>
 
 
         <!-- VIP 2 -->
 
-        <div class="vip-card">
+        <div
+            class="vip-level-card"
+            data-vip-level="2"
+        >
 
             <div class="vip-card-top">
 
-                <div class="vip-card-badge">
-                    👑
+                <div class="vip-card-icon">
+                    🥈
                 </div>
 
-                <div class="vip-card-title">
+                <div>
 
-                    <h3>VIP 2</h3>
+                    <h3>
+                        VIP 2
+                    </h3>
 
                     <span>
-                        Shiba Supporter
+                        Hunter
                     </span>
 
                 </div>
 
-                <div class="vip-card-status locked">
-                    🔒
-                </div>
-
             </div>
 
 
-            <div class="vip-card-divider"></div>
-
-
-            <div class="vip-card-benefits">
+            <div class="vip-benefits">
 
                 <div>
-                    🚀
-                    <span>Mining Bonus</span>
+                    ⛏️ Mining
                     <strong>+25%</strong>
                 </div>
 
                 <div>
-                    ⚡
-                    <span>Energy Bonus</span>
+                    ⚡ Energy
                     <strong>+250</strong>
                 </div>
 
                 <div>
-                    🎁
-                    <span>Daily Reward</span>
+                    🎁 Daily
                     <strong>1,000 BSHIB</strong>
                 </div>
 
             </div>
+
+
+            <div class="vip-price">
+                50,000 BSHIB
+            </div>
+
+
+            <button
+                class="vip-buy-btn"
+                data-vip-level="2"
+            >
+                👑 Activate VIP 2
+            </button>
 
         </div>
 
 
         <!-- VIP 3 -->
 
-        <div class="vip-card">
+        <div
+            class="vip-level-card"
+            data-vip-level="3"
+        >
 
             <div class="vip-card-top">
 
-                <div class="vip-card-badge">
-                    👑
+                <div class="vip-card-icon">
+                    🏆
                 </div>
 
-                <div class="vip-card-title">
+                <div>
 
-                    <h3>VIP 3</h3>
+                    <h3>
+                        VIP 3
+                    </h3>
 
                     <span>
-                        Shiba Elite
+                        Warrior
                     </span>
 
                 </div>
 
-                <div class="vip-card-status locked">
-                    🔒
-                </div>
-
             </div>
 
 
-            <div class="vip-card-divider"></div>
-
-
-            <div class="vip-card-benefits">
+            <div class="vip-benefits">
 
                 <div>
-                    🚀
-                    <span>Mining Bonus</span>
+                    ⛏️ Mining
                     <strong>+50%</strong>
                 </div>
 
                 <div>
-                    ⚡
-                    <span>Energy Bonus</span>
+                    ⚡ Energy
                     <strong>+500</strong>
                 </div>
 
                 <div>
-                    🎁
-                    <span>Daily Reward</span>
+                    🎁 Daily
                     <strong>2,500 BSHIB</strong>
                 </div>
 
             </div>
+
+
+            <div class="vip-price">
+                150,000 BSHIB
+            </div>
+
+
+            <button
+                class="vip-buy-btn"
+                data-vip-level="3"
+            >
+                👑 Activate VIP 3
+            </button>
 
         </div>
 
 
         <!-- VIP 4 -->
 
-        <div class="vip-card">
+        <div
+            class="vip-level-card"
+            data-vip-level="4"
+        >
 
             <div class="vip-card-top">
 
-                <div class="vip-card-badge">
-                    👑
+                <div class="vip-card-icon">
+                    💎
                 </div>
 
-                <div class="vip-card-title">
+                <div>
 
-                    <h3>VIP 4</h3>
+                    <h3>
+                        VIP 4
+                    </h3>
 
                     <span>
-                        Shiba Master
+                        Elite
                     </span>
 
                 </div>
 
-                <div class="vip-card-status locked">
-                    🔒
-                </div>
-
             </div>
 
 
-            <div class="vip-card-divider"></div>
-
-
-            <div class="vip-card-benefits">
+            <div class="vip-benefits">
 
                 <div>
-                    🚀
-                    <span>Mining Bonus</span>
+                    ⛏️ Mining
                     <strong>+75%</strong>
                 </div>
 
                 <div>
-                    ⚡
-                    <span>Energy Bonus</span>
+                    ⚡ Energy
                     <strong>+750</strong>
                 </div>
 
                 <div>
-                    🎁
-                    <span>Daily Reward</span>
+                    🎁 Daily
                     <strong>5,000 BSHIB</strong>
                 </div>
 
             </div>
+
+
+            <div class="vip-price">
+                400,000 BSHIB
+            </div>
+
+
+            <button
+                class="vip-buy-btn"
+                data-vip-level="4"
+            >
+                👑 Activate VIP 4
+            </button>
 
         </div>
 
 
         <!-- VIP 5 -->
 
-        <div class="vip-card vip-card-ultimate">
+        <div
+            class="vip-level-card vip-5-card"
+            data-vip-level="5"
+        >
 
             <div class="vip-card-top">
 
-                <div class="vip-card-badge">
+                <div class="vip-card-icon">
                     👑
                 </div>
 
-                <div class="vip-card-title">
+                <div>
 
-                    <h3>VIP 5</h3>
+                    <h3>
+                        VIP 5
+                    </h3>
 
                     <span>
                         Shiba Legend
@@ -816,50 +853,47 @@
 
                 </div>
 
-                <div class="vip-card-status locked">
-                    🔒
-                </div>
-
             </div>
 
 
-            <div class="vip-card-divider"></div>
-
-
-            <div class="vip-card-benefits">
+            <div class="vip-benefits">
 
                 <div>
-                    🚀
-                    <span>Mining Bonus</span>
+                    ⛏️ Mining
                     <strong>+100%</strong>
                 </div>
 
                 <div>
-                    ⚡
-                    <span>Energy Bonus</span>
+                    ⚡ Energy
                     <strong>+1,000</strong>
                 </div>
 
                 <div>
-                    🎁
-                    <span>Daily Reward</span>
+                    🎁 Daily
                     <strong>10,000 BSHIB</strong>
-                </div>
-
-                <div>
-                    🎒
-                    <span>Exclusive Items</span>
-                    <strong>Unlocked</strong>
                 </div>
 
             </div>
 
+
+            <div class="vip-price">
+                1,000,000 BSHIB
+            </div>
+
+
+            <button
+                class="vip-buy-btn"
+                data-vip-level="5"
+            >
+                👑 Activate VIP 5
+            </button>
+
         </div>
+
 
     </div>
 
-    </section>
-     
+                        </section>
 
 
         <!-- ============================= -->
