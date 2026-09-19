@@ -1738,3 +1738,43 @@ outline: none;
     }
 
    }
+/* ============================= */
+/* VIP COLUMN LAYOUT FIX */
+/* ============================= */
+
+.vip-level-container {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 14px !important;
+}
+
+.vip-level-card {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    flex: none !important;
+}
+
+.vip-card-top {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.vip-benefits {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+}
+
+.vip-benefits div {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+.vip-buy-btn {
+    width: 100% !important;
+    box-sizing: border-box !important;
+   }
