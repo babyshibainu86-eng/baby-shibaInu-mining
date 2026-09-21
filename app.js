@@ -4,7 +4,16 @@
 // Stable User + CloudStorage + Local Backup
 // Referral Ready for Telegram Serverless
 // VIP Test Purchase System
+// Supabase Telegram Authentication
 // ==========================================
+
+
+// ==========================================
+// SUPABASE TELEGRAM AUTH
+// ==========================================
+
+const SUPABASE_TELEGRAM_AUTH_URL =
+    "https://fvxzqgolidhfwxctroqe.supabase.co/functions/v1/clever-function";
 
 
 // ==========================================
@@ -149,6 +158,98 @@ function refreshUser() {
     );
 
     return user;
+
+}
+
+
+// ==========================================
+// SUPABASE TELEGRAM AUTHENTICATION
+// ==========================================
+
+async function authenticateWithSupabase() {
+
+    try {
+
+        if (
+            !tg ||
+            !tg.initData
+        ) {
+
+            console.log(
+                "⚠️ Telegram initData not available for Supabase authentication"
+            );
+
+            return null;
+
+        }
+
+
+        console.log(
+            "🔐 Authenticating Telegram user with Supabase..."
+        );
+
+
+        const response =
+            await fetch(
+                SUPABASE_TELEGRAM_AUTH_URL,
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            initData:
+                                tg.initData
+
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            console.error(
+                "❌ Supabase authentication error:",
+                data
+            );
+
+            return null;
+
+        }
+
+
+        console.log(
+            "✅ Supabase authentication successful:",
+            data
+        );
+
+
+        return data;
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Supabase connection error:",
+            error
+        );
+
+        return null;
+
+    }
 
 }
 
@@ -3673,6 +3774,13 @@ async function initApp() {
 
 
     refreshUser();
+
+
+    // ======================================
+    // SUPABASE AUTHENTICATION
+    // ======================================
+
+    await authenticateWithSupabase();
 
 
     // --------------------------------------
