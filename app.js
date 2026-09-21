@@ -13,7 +13,7 @@
 // ==========================================
 
 const SUPABASE_TELEGRAM_AUTH_URL =
-    "https://fvxzqgolidhfwxctroqe.supabase.co/functions/v1/clever-function";
+    "https://xtfleiaormhmbzwurqoi.supabase.co/functions/v1/bright-endpoint";
 
 
 // ==========================================
