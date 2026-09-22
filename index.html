@@ -1026,12 +1026,13 @@
         <!-- ============================= -->
 
     <div class="bottom-nav">
+<button class="nav-item active"
+onclick="document.querySelectorAll('.game-page').forEach(p=>p.classList.remove('active')); document.getElementById('miningPage').classList.add('active');">
 
-  <button class="nav-item active" onclick="showPage('miningPage')">
     <span>⛏️</span>
     <small>Mining</small>
-  </button>
 
+</button>
   <button class="nav-item" onclick="showPage('itemsPage')">
     <span>🎒</span>
     <small>Items</small>
