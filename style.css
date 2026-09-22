@@ -1923,3 +1923,23 @@ button {
         font-size: 15px;
     }
 }
+/* REMOVE UNWANTED DOTS */
+body::before,
+body::after,
+.app::before,
+.app::after,
+.game-app::before,
+.game-app::after {
+    content: none !important;
+    display: none !important;
+}
+
+ul,
+ol {
+    list-style: none !important;
+    padding-left: 0 !important;
+}
+
+li::marker {
+    content: none !important;
+}
