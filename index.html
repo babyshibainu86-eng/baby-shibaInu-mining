@@ -1021,18 +1021,79 @@
         </section>
 
 
-        <!-- ============================= -->
-        <!-- BOTTOM NAVIGATION -->
-        <!-- ============================= -->
+<!-- ============================= -->
+<!-- BOTTOM NAVIGATION -->
+<!-- ============================= -->
 
-    <div class="bottom-nav">
-<button class="nav-item active"
-onclick="document.querySelectorAll('.game-page').forEach(p=>p.classList.remove('active')); document.getElementById('miningPage').classList.add('active');">
+<div class="bottom-nav">
 
-    <span>⛏️</span>
-    <small>Mining</small>
+    <button
+        id="miningNav"
+        class="nav-item active"
+        type="button"
+        onclick="showPage('miningPage')">
 
-</button>
+        <span>⛏️</span>
+        <small>Mining</small>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        type="button"
+        onclick="showPage('itemsPage')">
+
+        <span>🎒</span>
+        <small>Items</small>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        type="button"
+        onclick="showPage('shopPage')">
+
+        <span>🛒</span>
+        <small>Shop</small>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        type="button"
+        onclick="showPage('vipPage')">
+
+        <span>👑</span>
+        <small>VIP</small>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        type="button"
+        onclick="showPage('friendsPage')">
+
+        <span>👥</span>
+        <small>Friends</small>
+
+    </button>
+
+
+    <button
+        class="nav-item"
+        type="button"
+        onclick="showPage('arenaPage')">
+
+        <span>⚔️</span>
+        <small>Arena</small>
+
+    </button>
+
+</div>
   <button class="nav-item" onclick="showPage('itemsPage')">
     <span>🎒</span>
     <small>Items</small>
