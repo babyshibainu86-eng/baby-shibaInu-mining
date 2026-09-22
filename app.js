@@ -413,93 +413,55 @@ document.addEventListener("DOMContentLoaded", function () {
     /* =====================================================
        TAP TO MINE
     ===================================================== */
-
-    function tapMine() {
-
-        if (state.energy <= 0) {
-
-            showToast(
-                "⚡ Not enough Energy"
-            );
-
-            return;
-        }
-
-
-        const amount =
-            Math.max(
-                1,
-                Number(state.tapPower) || 1
-            );
-
-
-        state.balance += amount;
-
-        state.totalMined += amount;
-
-        state.energy -= 1;
-
-        state.xp += amount;
-
-
-        checkLevel();
-
-
-        updateUI();
-
-        createCoinEffect(
-            "+" + formatNumber(amount)
-        );
-
-
-        if (tg) {
-
-            try {
-
-                tg.HapticFeedback.impactOccurred(
-                    "light"
-                );
-
-            } catch (e) {}
-
-        }
-
-
-        saveGame();
-
+function tapMine(x, y){
+    if(state.energy<=0){
+        showToast("⚡ Not enough Energy");
+        return;
     }
 
+    const amount=Math.max(1,Number(state.tapPower)||1);
+
+    state.balance+=amount;
+    state.totalMined+=amount;
+    state.energy-=1;
+    state.xp+=amount;
+
+    checkLevel();
+    updateUI();
+
+    createCoinEffect("+"+formatNumber(amount), x, y);
+
+    if(tg){
+        try{
+            tg.HapticFeedback.impactOccurred("light");
+        }catch(e){}
+    }
+
+    saveGame();
+}
+    
 
     /* =====================================================
        TAP BUTTON
     ===================================================== */
 
-    if (shibaButton) {
+    if(shibaButton){
 
-        shibaButton.addEventListener(
-            "click",
-            function (event) {
+    shibaButton.addEventListener("pointerdown", function(event){
 
-                event.preventDefault();
+        event.preventDefault();
 
-                tapMine();
-
-            }
+        tapMine(
+            event.clientX,
+            event.clientY
         );
 
-        shibaButton.addEventListener(
-            "touchstart",
-            function () {
+    });
 
-                /* Prevent duplicate handling */
-
-            },
-            {
-                passive: true
-            }
-        );
-    }
-
+    shibaButton.addEventListener("click", function(event){
+        event.preventDefault();
+    });
+}
 
     /* =====================================================
        AUTO MINING
@@ -1558,72 +1520,43 @@ document.addEventListener("DOMContentLoaded", function () {
        COIN EFFECT
     ===================================================== */
 
-    function createCoinEffect(text) {
+    function createCoinEffect(text, x, y){
 
-        if (!effects) {
-            return;
-        }
+    if(!effects) return;
 
+    const effect=document.createElement("div");
 
-        const effect =
-            document.createElement(
-                "div"
-            );
+    effect.className="coin-effect";
 
+    effect.textContent=text;
 
-        effect.className =
-            "coin-effect";
+    if(
+        typeof x === "number" &&
+        typeof y === "number"
+    ){
+        effect.style.left=x+"px";
+        effect.style.top=y+"px";
+    } else {
 
+        const rect=shibaButton
+            ? shibaButton.getBoundingClientRect()
+            : null;
 
-        effect.textContent =
-            text;
-
-
-        const rect =
-            shibaButton
-                ? shibaButton.getBoundingClientRect()
-                : null;
-
-
-        if (rect) {
-
-            effect.style.left =
-                (
-                    rect.left +
-                    rect.width / 2
-                ) + "px";
-
-            effect.style.top =
-                (
-                    rect.top +
-                    rect.height / 2
-                ) + "px";
-
+        if(rect){
+            effect.style.left=(rect.left + rect.width/2)+"px";
+            effect.style.top=(rect.top + rect.height/2)+"px";
         } else {
-
-            effect.style.left =
-                "50%";
-
-            effect.style.top =
-                "50%";
+            effect.style.left="50%";
+            effect.style.top="50%";
         }
-
-
-        effects.appendChild(
-            effect
-        );
-
-
-        setTimeout(
-            function () {
-
-                effect.remove();
-
-            },
-            1000
-        );
     }
 
+    effects.appendChild(effect);
+
+    setTimeout(function(){
+        effect.remove();
+    },1000);
+}
 
     /* =====================================================
        TOAST
