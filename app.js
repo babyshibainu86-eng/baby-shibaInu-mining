@@ -1,11 +1,11 @@
 // ==========================================
 // BABY SHIBA INU - MINI APP
-// APP VERSION 3.0
+// APP VERSION 3.1
 // Stable User + CloudStorage + Local Backup
 // Referral Ready for Telegram Serverless
 // VIP Test Purchase System
 // Supabase Telegram Authentication
-// Supabase Persistent Game Save / Load
+// SAFE Persistent Game Save / Load
 // ==========================================
 
 
@@ -73,7 +73,6 @@ function initTelegram() {
 
     }
 
-
     try {
 
         tg.ready();
@@ -88,15 +87,12 @@ function initTelegram() {
 
     }
 
-
     telegramUser =
         tg.initDataUnsafe?.user || null;
-
 
     console.log(
         "📱 Telegram WebApp connected"
     );
-
 
     console.log(
         "Telegram User:",
@@ -117,7 +113,6 @@ function getTelegramUser() {
         const currentUser =
             tg.initDataUnsafe?.user || null;
 
-
         if (currentUser) {
 
             telegramUser =
@@ -126,7 +121,6 @@ function getTelegramUser() {
         }
 
     }
-
 
     if (telegramUser) {
 
@@ -150,7 +144,6 @@ function getTelegramUser() {
         };
 
     }
-
 
     return {
 
@@ -176,16 +169,13 @@ function refreshUser() {
     const currentUser =
         getTelegramUser();
 
-
     user =
         currentUser;
-
 
     console.log(
         "👤 Current User:",
         user
     );
-
 
     return user;
 
@@ -194,6 +184,8 @@ function refreshUser() {
 
 // ==========================================
 // SUPABASE TELEGRAM AUTHENTICATION
+// IMPORTANT:
+// DO NOT LOAD GAME FROM SUPABASE ON LOGIN
 // ==========================================
 
 async function authenticateWithSupabase() {
@@ -213,11 +205,9 @@ async function authenticateWithSupabase() {
 
         }
 
-
         console.log(
             "🔐 Authenticating Telegram user with Supabase..."
         );
-
 
         const response =
             await fetch(
@@ -247,10 +237,8 @@ async function authenticateWithSupabase() {
                 }
             );
 
-
         const data =
             await response.json();
-
 
         if (!response.ok) {
 
@@ -263,7 +251,6 @@ async function authenticateWithSupabase() {
 
         }
 
-
         if (!data.success) {
 
             console.error(
@@ -275,7 +262,6 @@ async function authenticateWithSupabase() {
 
         }
 
-
         console.log(
             "✅ Supabase authentication successful:",
             data
@@ -283,40 +269,22 @@ async function authenticateWithSupabase() {
 
 
         // ======================================
-        // SUPABASE GAME LOAD
+        // IMPORTANT
+        // NEVER LOAD data.user INTO GAME HERE
+        //
+        // LocalStorage / Telegram CloudStorage
+        // is the recovery source at startup.
+        //
+        // Supabase is used for persistent SAVE.
         // ======================================
-
-        // IMPORTANT:
-        // New Edge Function returns the database
-        // user inside data.user, not data.game.
-
-        if (data.user) {
-
-            loadGameFromSupabase(
-                data.user
-            );
-
-            console.log(
-                "☁️ Game loaded from Supabase:",
-                game
-            );
-
-        }
-
 
         supabaseReady = true;
 
-
-        saveLocalBackup();
-
-
         console.log(
-            "✅ Supabase persistent storage ready"
+            "☁️ Supabase persistent storage ready"
         );
 
-
         return data;
-
 
     } catch (error) {
 
@@ -325,9 +293,7 @@ async function authenticateWithSupabase() {
             error
         );
 
-
         supabaseReady = false;
-
 
         return null;
 
@@ -338,6 +304,7 @@ async function authenticateWithSupabase() {
 
 // ==========================================
 // LOAD GAME FROM SUPABASE
+// SAFE FUNCTION
 // ==========================================
 
 function loadGameFromSupabase(dbGame) {
@@ -348,123 +315,138 @@ function loadGameFromSupabase(dbGame) {
 
     }
 
-
     try {
+
+        const current =
+            {
+                ...defaultState,
+                ...game
+            };
+
+
+        const dbBalance =
+            Number(dbGame.balance);
+
+        const currentBalance =
+            Number(current.balance);
+
+
+        // ======================================
+        // NEVER ALLOW ZERO TO DESTROY
+        // A NON-ZERO LOCAL BALANCE
+        // ======================================
+
+        let safeBalance =
+            currentBalance;
+
+
+        if (
+            currentBalance <= 0 &&
+            Number.isFinite(dbBalance) &&
+            dbBalance > 0
+        ) {
+
+            safeBalance =
+                dbBalance;
+
+        }
+
+
+        if (
+            currentBalance > 0
+        ) {
+
+            safeBalance =
+                currentBalance;
+
+        }
+
 
         game = {
 
             ...defaultState,
 
-            ...game,
+            ...current,
 
             balance:
-                Number(
-                    dbGame.balance ??
-                    game.balance ??
-                    0
-                ),
+                safeBalance,
 
             totalMined:
-                Number(
-                    dbGame.total_mined ??
-                    dbGame.totalMined ??
-                    game.totalMined ??
-                    0
+                Math.max(
+                    Number(current.totalMined) || 0,
+                    Number(dbGame.totalMined) || 0
                 ),
 
             level:
-                Number(
-                    dbGame.level ??
-                    game.level ??
-                    1
+                Math.max(
+                    Number(current.level) || 1,
+                    Number(dbGame.level) || 1
                 ),
 
             xp:
-                Number(
-                    dbGame.xp ??
-                    game.xp ??
-                    0
+                Math.max(
+                    Number(current.xp) || 0,
+                    Number(dbGame.xp) || 0
                 ),
 
             tapPower:
-                Number(
-                    dbGame.tap_power ??
-                    dbGame.tapPower ??
-                    game.tapPower ??
-                    1
+                Math.max(
+                    Number(current.tapPower) || 1,
+                    Number(dbGame.tapPower) || 1
                 ),
 
             energy:
-                Number(
-                    dbGame.energy ??
-                    game.energy ??
-                    1250
-                ),
+                Number.isFinite(
+                    Number(dbGame.energy)
+                )
+                    ? Number(dbGame.energy)
+                    : Number(current.energy) || 1250,
 
             maxEnergy:
-                Number(
-                    dbGame.max_energy ??
-                    dbGame.maxEnergy ??
-                    game.maxEnergy ??
-                    1250
+                Math.max(
+                    Number(current.maxEnergy) || 1250,
+                    Number(dbGame.maxEnergy) || 1250
                 ),
 
             mineRate:
-                Number(
-                    dbGame.mine_rate ??
-                    dbGame.mineRate ??
-                    game.mineRate ??
-                    4
+                Math.max(
+                    Number(current.mineRate) || 4,
+                    Number(dbGame.mineRate) || 4
                 ),
 
             tapLevel:
-                Number(
-                    dbGame.tap_level ??
-                    dbGame.tapLevel ??
-                    game.tapLevel ??
-                    1
+                Math.max(
+                    Number(current.tapLevel) || 1,
+                    Number(dbGame.tapLevel) || 1
                 ),
 
             energyLevel:
-                Number(
-                    dbGame.energy_level ??
-                    dbGame.energyLevel ??
-                    game.energyLevel ??
-                    1
+                Math.max(
+                    Number(current.energyLevel) || 1,
+                    Number(dbGame.energyLevel) || 1
                 ),
 
             boostLevel:
-                Number(
-                    dbGame.boost_level ??
-                    dbGame.boostLevel ??
-                    game.boostLevel ??
-                    1
+                Math.max(
+                    Number(current.boostLevel) || 1,
+                    Number(dbGame.boostLevel) || 1
                 ),
 
             missionProgress:
-                Number(
-                    dbGame.progress ??
-                    dbGame.missionProgress ??
-                    game.missionProgress ??
-                    0
+                Math.max(
+                    Number(current.missionProgress) || 0,
+                    Number(dbGame.missionProgress) || 0
                 ),
 
             missionClaimed:
-                typeof dbGame.mission_claimed === "boolean"
-                    ? dbGame.mission_claimed
-                    : (
-                        dbGame.missionClaimed ??
-                        game.missionClaimed ??
-                        false
-                    ),
+                Boolean(
+                    current.missionClaimed ||
+                    dbGame.missionClaimed
+                ),
 
             sound:
-                typeof dbGame.sound === "boolean"
-                    ? dbGame.sound
-                    : (
-                        game.sound ??
-                        true
-                    )
+                current.sound !== false &&
+                dbGame.sound !== false
 
         };
 
@@ -481,7 +463,6 @@ function loadGameFromSupabase(dbGame) {
 
         }
 
-
         if (
             game.energy >
             getEffectiveMaxEnergy()
@@ -492,7 +473,6 @@ function loadGameFromSupabase(dbGame) {
 
         }
 
-
         if (
             game.level < 1
         ) {
@@ -500,7 +480,6 @@ function loadGameFromSupabase(dbGame) {
             game.level = 1;
 
         }
-
 
         if (
             game.tapLevel < 1
@@ -510,7 +489,6 @@ function loadGameFromSupabase(dbGame) {
 
         }
 
-
         if (
             game.energyLevel < 1
         ) {
@@ -518,7 +496,6 @@ function loadGameFromSupabase(dbGame) {
             game.energyLevel = 1;
 
         }
-
 
         if (
             game.boostLevel < 1
@@ -528,9 +505,12 @@ function loadGameFromSupabase(dbGame) {
 
         }
 
+        console.log(
+            "🛡️ Safe Supabase merge completed:",
+            game
+        );
 
         return true;
-
 
     } catch (error) {
 
@@ -542,6 +522,28 @@ function loadGameFromSupabase(dbGame) {
         return false;
 
     }
+
+}
+
+
+// ==========================================
+// SAFE NUMBER
+// ==========================================
+
+function safeNumber(value, fallback = 0) {
+
+    const number =
+        Number(value);
+
+    if (
+        Number.isFinite(number)
+    ) {
+
+        return number;
+
+    }
+
+    return fallback;
 
 }
 
@@ -562,7 +564,6 @@ async function saveGameToSupabase() {
 
     }
 
-
     if (supabaseSaveInProgress) {
 
         supabaseSavePending = true;
@@ -571,74 +572,120 @@ async function saveGameToSupabase() {
 
     }
 
-
     try {
 
         supabaseSaveInProgress = true;
-
         supabaseSavePending = false;
 
 
         const gameData = {
 
             balance:
-                Number(
-                    game.balance
+                Math.max(
+                    0,
+                    safeNumber(
+                        game.balance,
+                        0
+                    )
                 ),
 
             totalMined:
-                Number(
-                    game.totalMined
+                Math.max(
+                    0,
+                    safeNumber(
+                        game.totalMined,
+                        0
+                    )
                 ),
 
             level:
-                Number(
-                    game.level
+                Math.max(
+                    1,
+                    safeNumber(
+                        game.level,
+                        1
+                    )
                 ),
 
             xp:
-                Number(
-                    game.xp
+                Math.max(
+                    0,
+                    safeNumber(
+                        game.xp,
+                        0
+                    )
                 ),
 
             tapPower:
-                Number(
-                    game.tapPower
+                Math.max(
+                    1,
+                    safeNumber(
+                        game.tapPower,
+                        1
+                    )
                 ),
 
             energy:
-                Number(
-                    game.energy
+                Math.max(
+                    0,
+                    safeNumber(
+                        game.energy,
+                        1250
+                    )
                 ),
 
             maxEnergy:
-                Number(
-                    game.maxEnergy
+                Math.max(
+                    1250,
+                    safeNumber(
+                        game.maxEnergy,
+                        1250
+                    )
                 ),
 
             mineRate:
-                Number(
-                    game.mineRate
+                Math.max(
+                    4,
+                    safeNumber(
+                        game.mineRate,
+                        4
+                    )
                 ),
 
             tapLevel:
-                Number(
-                    game.tapLevel
+                Math.max(
+                    1,
+                    safeNumber(
+                        game.tapLevel,
+                        1
+                    )
                 ),
 
             energyLevel:
-                Number(
-                    game.energyLevel
+                Math.max(
+                    1,
+                    safeNumber(
+                        game.energyLevel,
+                        1
+                    )
                 ),
 
             boostLevel:
-                Number(
-                    game.boostLevel
+                Math.max(
+                    1,
+                    safeNumber(
+                        game.boostLevel,
+                        1
+                    )
                 ),
 
             missionProgress:
-                Number(
-                    game.missionProgress
+                Math.max(
+                    0,
+                    safeNumber(
+                        game.missionProgress,
+                        0
+                    )
                 ),
 
             missionClaimed:
@@ -653,7 +700,8 @@ async function saveGameToSupabase() {
 
 
         console.log(
-            "☁️ Saving game to Supabase..."
+            "☁️ Saving game to Supabase:",
+            gameData
         );
 
 
@@ -693,7 +741,8 @@ async function saveGameToSupabase() {
             await response.json();
 
 
-        if (!response.ok ||
+        if (
+            !response.ok ||
             !data.success
         ) {
 
@@ -718,7 +767,6 @@ async function saveGameToSupabase() {
 
         return true;
 
-
     } catch (error) {
 
         console.error(
@@ -727,7 +775,6 @@ async function saveGameToSupabase() {
         );
 
         return false;
-
 
     } finally {
 
@@ -740,7 +787,6 @@ async function saveGameToSupabase() {
 
             supabaseSavePending =
                 false;
-
 
             queueSupabaseSave();
 
@@ -768,32 +814,37 @@ function queueSupabaseSave(
     }
 
 
-    // If an immediate save is requested,
-    // cancel any waiting timer first.
+    // ======================================
+    // IMMEDIATE SAVE
+    // ======================================
 
     if (
-        immediate &&
-        supabaseSaveTimer
+        immediate
     ) {
 
-        clearTimeout(
+        if (
             supabaseSaveTimer
-        );
+        ) {
 
-        supabaseSaveTimer =
-            null;
+            clearTimeout(
+                supabaseSaveTimer
+            );
+
+            supabaseSaveTimer =
+                null;
+
+        }
+
+        saveGameToSupabase();
+
+        return;
 
     }
 
 
-    // If a save is already running,
-    // mark another save as pending.
-
     if (
-        supabaseSaveInProgress
+        supabaseSaveTimer
     ) {
-
-        supabaseSavePending = true;
 
         return;
 
@@ -809,44 +860,12 @@ function queueSupabaseSave(
         lastSupabaseSaveTime;
 
 
-    // ======================================
-    // IMMEDIATE SAVE
-    // ======================================
-
-    if (
-        immediate
-    ) {
-
-        saveGameToSupabase();
-
-        return;
-
-    }
-
-
-    // ======================================
-    // NORMAL SAVE
-    // ======================================
-
     if (
         elapsed >=
         SUPABASE_SAVE_INTERVAL
     ) {
 
         saveGameToSupabase();
-
-        return;
-
-    }
-
-
-    // ======================================
-    // WAITING SAVE
-    // ======================================
-
-    if (
-        supabaseSaveTimer
-    ) {
 
         return;
 
@@ -886,18 +905,15 @@ function getUserDisplayName(targetUser) {
 
     }
 
-
     const firstName =
         targetUser.firstName ||
         targetUser.first_name ||
         "";
 
-
     const lastName =
         targetUser.lastName ||
         targetUser.last_name ||
         "";
-
 
     const fullName =
         (
@@ -906,13 +922,11 @@ function getUserDisplayName(targetUser) {
             lastName
         ).trim();
 
-
     if (fullName) {
 
         return fullName;
 
     }
-
 
     if (targetUser.username) {
 
@@ -922,7 +936,6 @@ function getUserDisplayName(targetUser) {
         );
 
     }
-
 
     return "Player";
 
@@ -1035,7 +1048,6 @@ const VIP_LEVELS = {
 
     },
 
-
     1: {
 
         name: "VIP 1",
@@ -1049,7 +1061,6 @@ const VIP_LEVELS = {
         price: 10000
 
     },
-
 
     2: {
 
@@ -1065,7 +1076,6 @@ const VIP_LEVELS = {
 
     },
 
-
     3: {
 
         name: "VIP 3",
@@ -1080,7 +1090,6 @@ const VIP_LEVELS = {
 
     },
 
-
     4: {
 
         name: "VIP 4",
@@ -1094,7 +1103,6 @@ const VIP_LEVELS = {
         price: 400000
 
     },
-
 
     5: {
 
@@ -1122,7 +1130,6 @@ function getVIPData() {
     const level =
         Number(game.vipLevel) || 0;
 
-
     return (
         VIP_LEVELS[level] ||
         VIP_LEVELS[0]
@@ -1140,13 +1147,11 @@ function getVIPPrice(level) {
     const vip =
         VIP_LEVELS[level];
 
-
     if (!vip) {
 
         return 0;
 
     }
-
 
     return (
         Number(vip.price) || 0
@@ -1164,14 +1169,11 @@ function getEffectiveMineRate() {
     const vip =
         getVIPData();
 
-
     const baseRate =
         Number(game.mineRate) || 0;
 
-
     const bonus =
         vip.miningBonus || 0;
-
 
     return (
 
@@ -1196,14 +1198,11 @@ function getEffectiveMaxEnergy() {
     const vip =
         getVIPData();
 
-
     const baseEnergy =
         Number(game.maxEnergy) || 0;
 
-
     const bonus =
         vip.energyBonus || 0;
-
 
     return (
         baseEnergy +
@@ -1221,7 +1220,6 @@ function getTodayDate() {
 
     const now =
         new Date();
-
 
     return (
 
@@ -1249,7 +1247,6 @@ function buyVIP(level) {
     const newLevel =
         Number(level);
 
-
     if (
         !Number.isInteger(
             newLevel
@@ -1264,7 +1261,6 @@ function buyVIP(level) {
 
     }
 
-
     if (
         newLevel < 1 ||
         newLevel > 5
@@ -1277,7 +1273,6 @@ function buyVIP(level) {
         return;
 
     }
-
 
     if (
         newLevel <=
@@ -1292,10 +1287,8 @@ function buyVIP(level) {
 
     }
 
-
     const vip =
         VIP_LEVELS[newLevel];
-
 
     if (!vip) {
 
@@ -1307,12 +1300,10 @@ function buyVIP(level) {
 
     }
 
-
     const cost =
         getVIPPrice(
             newLevel
         );
-
 
     if (
         game.balance <
@@ -1327,18 +1318,14 @@ function buyVIP(level) {
 
     }
 
-
     game.balance -=
         cost;
-
 
     game.vipLevel =
         newLevel;
 
-
     const effectiveMaxEnergy =
         getEffectiveMaxEnergy();
-
 
     if (
         game.energy >
@@ -1350,19 +1337,15 @@ function buyVIP(level) {
 
     }
 
-
     game.vipRewardClaimed =
         false;
-
 
     game.vipLastRewardDate =
         "";
 
-
     saveGame();
 
     updateUI();
-
 
     if (
         tg &&
@@ -1376,7 +1359,6 @@ function buyVIP(level) {
 
     }
 
-
     showToast(
 
         "👑 " +
@@ -1384,7 +1366,6 @@ function buyVIP(level) {
         " activated!"
 
     );
-
 
     console.log(
         "👑 VIP purchased:",
@@ -1404,7 +1385,6 @@ function claimVIPDailyReward() {
     const vip =
         getVIPData();
 
-
     if (
         game.vipLevel <= 0 ||
         vip.dailyReward <= 0
@@ -1418,10 +1398,8 @@ function claimVIPDailyReward() {
 
     }
 
-
     const today =
         getTodayDate();
-
 
     if (
         game.vipLastRewardDate ===
@@ -1436,23 +1414,18 @@ function claimVIPDailyReward() {
 
     }
 
-
     game.balance +=
         vip.dailyReward;
-
 
     game.vipLastRewardDate =
         today;
 
-
     game.vipRewardClaimed =
         true;
-
 
     saveGame();
 
     updateUI();
-
 
     showToast(
         "🎁 +" +
@@ -1474,7 +1447,6 @@ function setVIPLevel(level) {
     const newLevel =
         Number(level);
 
-
     if (
         !Number.isInteger(
             newLevel
@@ -1485,7 +1457,6 @@ function setVIPLevel(level) {
 
     }
 
-
     if (
         newLevel < 0 ||
         newLevel > 5
@@ -1495,14 +1466,11 @@ function setVIPLevel(level) {
 
     }
 
-
     game.vipLevel =
         newLevel;
 
-
     const effectiveMax =
         getEffectiveMaxEnergy();
-
 
     if (
         game.energy >
@@ -1514,11 +1482,9 @@ function setVIPLevel(level) {
 
     }
 
-
     saveGame();
 
     updateUI();
-
 
     console.log(
         "👑 VIP level changed:",
@@ -1540,7 +1506,6 @@ function generateReferralCode() {
 
     }
 
-
     if (user && user.id) {
 
         game.referralCode =
@@ -1554,9 +1519,7 @@ function generateReferralCode() {
 
     }
 
-
     saveGame();
-
 
     return game.referralCode;
 
@@ -1575,7 +1538,6 @@ function getReferralCode() {
 
     }
 
-
     if (user && user.id) {
 
         return (
@@ -1584,7 +1546,6 @@ function getReferralCode() {
         );
 
     }
-
 
     return "BSHIBGUEST";
 
@@ -1599,7 +1560,6 @@ function getReferralLink() {
 
     const code =
         getReferralCode();
-
 
     return (
 
@@ -1625,17 +1585,14 @@ function getIncomingReferral() {
 
     }
 
-
     const startParam =
         tg.initDataUnsafe?.start_param;
-
 
     if (!startParam) {
 
         return "";
 
     }
-
 
     return String(startParam);
 
@@ -1650,7 +1607,6 @@ function createReferralUserData() {
 
     const currentUser =
         getTelegramUser();
-
 
     return {
 
@@ -1697,19 +1653,16 @@ function processReferral() {
     const incomingReferral =
         getIncomingReferral();
 
-
     if (!incomingReferral) {
 
         return;
 
     }
 
-
     console.log(
         "🔗 Incoming referral:",
         incomingReferral
     );
-
 
     if (
         game.referralProcessed ||
@@ -1725,10 +1678,8 @@ function processReferral() {
 
     }
 
-
     const myCode =
         getReferralCode();
-
 
     if (
         incomingReferral ===
@@ -1742,7 +1693,6 @@ function processReferral() {
         return;
 
     }
-
 
     if (
         !incomingReferral.startsWith(
@@ -1759,18 +1709,14 @@ function processReferral() {
 
     }
 
-
     game.referredBy =
         incomingReferral;
-
 
     game.referralProcessed =
         true;
 
-
     const referralUser =
         createReferralUserData();
-
 
     game.pendingReferral = {
 
@@ -1788,16 +1734,13 @@ function processReferral() {
 
     };
 
-
     saveGame();
 
     updateUI();
 
-
     showToast(
         "🔗 Referral recorded!"
     );
-
 
     console.log(
         "✅ Referral ready for Serverless:",
@@ -1822,7 +1765,6 @@ function getGameStorageKey() {
 
     }
 
-
     return "babyShibaGame_GUEST";
 
 }
@@ -1839,22 +1781,18 @@ function saveLocalBackup() {
         const key =
             getGameStorageKey();
 
-
         const data =
             JSON.stringify(game);
-
 
         localStorage.setItem(
             key,
             data
         );
 
-
         console.log(
             "💾 Local backup saved:",
             key
         );
-
 
     } catch (error) {
 
@@ -1879,12 +1817,10 @@ function loadLocalBackup() {
         const key =
             getGameStorageKey();
 
-
         const saved =
             localStorage.getItem(
                 key
             );
-
 
         if (!saved) {
 
@@ -1892,10 +1828,8 @@ function loadLocalBackup() {
 
         }
 
-
         const parsed =
             JSON.parse(saved);
-
 
         game = {
 
@@ -1905,15 +1839,12 @@ function loadLocalBackup() {
 
         };
 
-
         console.log(
             "💾 Local backup loaded:",
             game
         );
 
-
         return true;
-
 
     } catch (error) {
 
@@ -1921,7 +1852,6 @@ function loadLocalBackup() {
             "❌ Local backup load error:",
             error
         );
-
 
         return false;
 
@@ -1937,7 +1867,7 @@ function loadLocalBackup() {
 function saveGame() {
 
     // ======================================
-    // LOCAL
+    // LOCAL BACKUP
     // ======================================
 
     saveLocalBackup();
@@ -1962,7 +1892,6 @@ function saveGame() {
 
     }
 
-
     try {
 
         const storage =
@@ -1972,7 +1901,6 @@ function saveGame() {
             Telegram.WebApp &&
 
             Telegram.WebApp.CloudStorage;
-
 
         if (!storage) {
 
@@ -1984,15 +1912,12 @@ function saveGame() {
 
         }
 
-
         saveInProgress = true;
 
         savePending = false;
 
-
         const data =
             JSON.stringify(game);
-
 
         storage.setItem(
 
@@ -2003,7 +1928,6 @@ function saveGame() {
             function(error, success) {
 
                 saveInProgress = false;
-
 
                 if (error) {
 
@@ -2021,8 +1945,9 @@ function saveGame() {
 
                 }
 
-
                 if (savePending) {
+
+                    savePending = false;
 
                     saveGame();
 
@@ -2032,11 +1957,9 @@ function saveGame() {
 
         );
 
-
     } catch (error) {
 
         saveInProgress = false;
-
 
         console.log(
             "❌ Save exception:",
@@ -2049,7 +1972,399 @@ function saveGame() {
 
 
 // ==========================================
+// MERGE LOCAL + CLOUD SAFELY
+// ==========================================
+
+function mergeGameStates(
+    localGame,
+    cloudGame
+) {
+
+    const localState = {
+
+        ...defaultState,
+
+        ...(localGame || {})
+
+    };
+
+
+    const cloudState = {
+
+        ...defaultState,
+
+        ...(cloudGame || {})
+
+    };
+
+
+    const localBalance =
+        safeNumber(
+            localState.balance,
+            0
+        );
+
+
+    const cloudBalance =
+        safeNumber(
+            cloudState.balance,
+            0
+        );
+
+
+    // ======================================
+    // BALANCE PROTECTION
+    //
+    // Non-zero balance must NEVER be
+    // replaced by zero automatically.
+    // ======================================
+
+    let finalBalance = 0;
+
+
+    if (
+        localBalance > 0 &&
+        cloudBalance <= 0
+    ) {
+
+        finalBalance =
+            localBalance;
+
+    } else if (
+        cloudBalance > 0 &&
+        localBalance <= 0
+    ) {
+
+        finalBalance =
+            cloudBalance;
+
+    } else if (
+        localBalance > 0 &&
+        cloudBalance > 0
+    ) {
+
+        // Keep the larger valid balance.
+        // This prevents an older zero/smaller
+        // value from destroying progress.
+        finalBalance =
+            Math.max(
+                localBalance,
+                cloudBalance
+            );
+
+    } else {
+
+        finalBalance = 0;
+
+    }
+
+
+    const merged = {
+
+        ...defaultState,
+
+        ...localState,
+
+        balance:
+            finalBalance,
+
+        totalMined:
+            Math.max(
+                safeNumber(
+                    localState.totalMined,
+                    0
+                ),
+                safeNumber(
+                    cloudState.totalMined,
+                    0
+                )
+            ),
+
+        level:
+            Math.max(
+                1,
+                safeNumber(
+                    localState.level,
+                    1
+                ),
+                safeNumber(
+                    cloudState.level,
+                    1
+                )
+            ),
+
+        xp:
+            Math.max(
+                safeNumber(
+                    localState.xp,
+                    0
+                ),
+                safeNumber(
+                    cloudState.xp,
+                    0
+                )
+            ),
+
+        tapPower:
+            Math.max(
+                1,
+                safeNumber(
+                    localState.tapPower,
+                    1
+                ),
+                safeNumber(
+                    cloudState.tapPower,
+                    1
+                )
+            ),
+
+        maxEnergy:
+            Math.max(
+                1250,
+                safeNumber(
+                    localState.maxEnergy,
+                    1250
+                ),
+                safeNumber(
+                    cloudState.maxEnergy,
+                    1250
+                )
+            ),
+
+        mineRate:
+            Math.max(
+                4,
+                safeNumber(
+                    localState.mineRate,
+                    4
+                ),
+                safeNumber(
+                    cloudState.mineRate,
+                    4
+                )
+            ),
+
+        tapLevel:
+            Math.max(
+                1,
+                safeNumber(
+                    localState.tapLevel,
+                    1
+                ),
+                safeNumber(
+                    cloudState.tapLevel,
+                    1
+                )
+            ),
+
+        energyLevel:
+            Math.max(
+                1,
+                safeNumber(
+                    localState.energyLevel,
+                    1
+                ),
+                safeNumber(
+                    cloudState.energyLevel,
+                    1
+                )
+            ),
+
+        boostLevel:
+            Math.max(
+                1,
+                safeNumber(
+                    localState.boostLevel,
+                    1
+                ),
+                safeNumber(
+                    cloudState.boostLevel,
+                    1
+                )
+            ),
+
+        missionProgress:
+            Math.max(
+                safeNumber(
+                    localState.missionProgress,
+                    0
+                ),
+                safeNumber(
+                    cloudState.missionProgress,
+                    0
+                )
+            ),
+
+        // Energy should use the cloud value
+        // when it is valid, otherwise local.
+        energy:
+            Number.isFinite(
+                Number(cloudState.energy)
+            )
+                ? Math.max(
+                    0,
+                    Number(cloudState.energy)
+                )
+                : Math.max(
+                    0,
+                    safeNumber(
+                        localState.energy,
+                        1250
+                    )
+                ),
+
+        missionClaimed:
+            Boolean(
+                localState.missionClaimed ||
+                cloudState.missionClaimed
+            ),
+
+        sound:
+            localState.sound !== false &&
+            cloudState.sound !== false,
+
+        // ==================================
+        // VIP
+        // ==================================
+
+        vipLevel:
+            Math.max(
+                0,
+                Math.min(
+                    5,
+                    safeNumber(
+                        localState.vipLevel,
+                        0
+                    )
+                )
+            ),
+
+        vipRewardClaimed:
+            Boolean(
+                localState.vipRewardClaimed ||
+                cloudState.vipRewardClaimed
+            ),
+
+        vipLastRewardDate:
+            localState.vipLastRewardDate ||
+            cloudState.vipLastRewardDate ||
+            "",
+
+        // ==================================
+        // REFERRAL
+        // ==================================
+
+        referralCode:
+            localState.referralCode ||
+            cloudState.referralCode ||
+            "",
+
+        referralCount:
+            Math.max(
+                0,
+                safeNumber(
+                    localState.referralCount,
+                    0
+                ),
+                safeNumber(
+                    cloudState.referralCount,
+                    0
+                )
+            ),
+
+        referralEarnings:
+            Math.max(
+                0,
+                safeNumber(
+                    localState.referralEarnings,
+                    0
+                ),
+                safeNumber(
+                    cloudState.referralEarnings,
+                    0
+                )
+            ),
+
+        referredBy:
+            localState.referredBy ||
+            cloudState.referredBy ||
+            "",
+
+        referrals:
+            Array.isArray(
+                localState.referrals
+            )
+                ? localState.referrals
+                : (
+                    Array.isArray(
+                        cloudState.referrals
+                    )
+                        ? cloudState.referrals
+                        : []
+                ),
+
+        pendingReferral:
+            localState.pendingReferral ||
+            cloudState.pendingReferral ||
+            null,
+
+        referralProcessed:
+            Boolean(
+                localState.referralProcessed ||
+                cloudState.referralProcessed
+            )
+
+    };
+
+
+    // ======================================
+    // FINAL SAFETY
+    // ======================================
+
+    if (
+        merged.energy < 0
+    ) {
+
+        merged.energy = 0;
+
+    }
+
+
+    if (
+        merged.level < 1
+    ) {
+
+        merged.level = 1;
+
+    }
+
+
+    if (
+        merged.mineRate < 4
+    ) {
+
+        merged.mineRate = 4;
+
+    }
+
+
+    if (
+        merged.maxEnergy < 1250
+    ) {
+
+        merged.maxEnergy = 1250;
+
+    }
+
+
+    return merged;
+
+}
+
+
+// ==========================================
 // LOAD FROM TELEGRAM CLOUD STORAGE
+// SAFE RECOVERY VERSION
 // ==========================================
 
 async function loadGameFromTelegram() {
@@ -2065,6 +2380,50 @@ async function loadGameFromTelegram() {
             Telegram.WebApp.CloudStorage;
 
 
+        // ======================================
+        // LOCAL BACKUP
+        // ======================================
+
+        let localGame = null;
+
+        try {
+
+            const key =
+                getGameStorageKey();
+
+            const localSaved =
+                localStorage.getItem(
+                    key
+                );
+
+            if (localSaved) {
+
+                localGame =
+                    JSON.parse(
+                        localSaved
+                    );
+
+                console.log(
+                    "💾 Local recovery data found:",
+                    localGame
+                );
+
+            }
+
+        } catch (error) {
+
+            console.log(
+                "⚠️ Local recovery read failed:",
+                error
+            );
+
+        }
+
+
+        // ======================================
+        // NO CLOUD STORAGE
+        // ======================================
+
         if (!storage) {
 
             console.log(
@@ -2072,16 +2431,37 @@ async function loadGameFromTelegram() {
             );
 
 
-            const localLoaded =
-                loadLocalBackup();
+            if (localGame) {
+
+                game =
+                    mergeGameStates(
+                        localGame,
+                        null
+                    );
+
+            } else {
+
+                game = {
+
+                    ...defaultState
+
+                };
+
+            }
 
 
-            resolve(localLoaded);
+            saveLocalBackup();
+
+            resolve(true);
 
             return;
 
         }
 
+
+        // ======================================
+        // GET CLOUD
+        // ======================================
 
         storage.getItem(
 
@@ -2097,35 +2477,15 @@ async function loadGameFromTelegram() {
                     );
 
 
-                    const localLoaded =
-                        loadLocalBackup();
+                    if (localGame) {
 
+                        game =
+                            mergeGameStates(
+                                localGame,
+                                null
+                            );
 
-                    resolve(localLoaded);
-
-                    return;
-
-                }
-
-
-                console.log(
-                    "☁️ CloudStorage data:",
-                    value
-                );
-
-
-                if (!value) {
-
-                    console.log(
-                        "🆕 No CloudStorage data"
-                    );
-
-
-                    const localLoaded =
-                        loadLocalBackup();
-
-
-                    if (!localLoaded) {
+                    } else {
 
                         game = {
 
@@ -2136,6 +2496,8 @@ async function loadGameFromTelegram() {
                     }
 
 
+                    saveLocalBackup();
+
                     resolve(true);
 
                     return;
@@ -2143,46 +2505,110 @@ async function loadGameFromTelegram() {
                 }
 
 
+                let cloudGame = null;
+
+
+                if (value) {
+
+                    try {
+
+                        cloudGame =
+                            JSON.parse(
+                                value
+                            );
+
+                        console.log(
+                            "☁️ CloudStorage data found:",
+                            cloudGame
+                        );
+
+                    } catch (parseError) {
+
+                        console.log(
+                            "❌ CloudStorage JSON error:",
+                            parseError
+                        );
+
+                    }
+
+                } else {
+
+                    console.log(
+                        "🆕 No CloudStorage data"
+                    );
+
+                }
+
+
+                // ==================================
+                // MERGE BOTH SOURCES
+                // ==================================
+
+                game =
+                    mergeGameStates(
+                        localGame,
+                        cloudGame
+                    );
+
+
+                console.log(
+                    "🛡️ SAFE RECOVERED GAME:",
+                    game
+                );
+
+
+                // ==================================
+                // WRITE RECOVERED STATE LOCALLY
+                // ==================================
+
+                saveLocalBackup();
+
+
+                // ==================================
+                // IMPORTANT:
+                // Only rewrite Telegram CloudStorage
+                // after the merge is complete.
+                // ==================================
+
                 try {
 
-                    const savedGame =
-                        JSON.parse(value);
+                    storage.setItem(
+                        "game",
+                        JSON.stringify(game),
+                        function(
+                            saveError,
+                            saveSuccess
+                        ) {
 
+                            if (saveError) {
 
-                    game = {
+                                console.log(
+                                    "⚠️ Recovered CloudStorage save error:",
+                                    saveError
+                                );
 
-                        ...defaultState,
+                            } else {
 
-                        ...savedGame
+                                console.log(
+                                    "✅ Recovered state written to CloudStorage:",
+                                    saveSuccess
+                                );
 
-                    };
+                            }
 
+                            resolve(true);
 
-                    saveLocalBackup();
-
-
-                    console.log(
-                        "✅ Game loaded from CloudStorage:",
-                        game
+                        }
                     );
 
+                } catch (saveError) {
+
+                    console.log(
+                        "⚠️ CloudStorage recovery write exception:",
+                        saveError
+                    );
 
                     resolve(true);
-
-
-                } catch (error) {
-
-                    console.log(
-                        "❌ CloudStorage data error:",
-                        error
-                    );
-
-
-                    const localLoaded =
-                        loadLocalBackup();
-
-
-                    resolve(localLoaded);
 
                 }
 
@@ -2206,7 +2632,6 @@ function showPage(pageId) {
             ".game-page"
         );
 
-
     pages.forEach(page => {
 
         page.classList.remove(
@@ -2215,19 +2640,16 @@ function showPage(pageId) {
 
     });
 
-
     const selected =
         document.getElementById(
             pageId
         );
-
 
     if (selected) {
 
         selected.classList.add(
             "active"
         );
-
 
         window.scrollTo({
 
@@ -2238,7 +2660,6 @@ function showPage(pageId) {
         });
 
     }
-
 
     updateNavigation(pageId);
 
@@ -2255,7 +2676,6 @@ function updateNavigation(pageId) {
         document.querySelectorAll(
             ".nav-item"
         );
-
 
     navItems.forEach(item => {
 
@@ -2292,7 +2712,6 @@ function setupNavigation() {
             ".nav-item"
         );
 
-
     navItems.forEach(item => {
 
         item.addEventListener(
@@ -2303,7 +2722,6 @@ function setupNavigation() {
 
                 const pageId =
                     item.dataset.page;
-
 
                 if (pageId) {
 
@@ -2331,12 +2749,10 @@ function startGame() {
             "introPage"
         );
 
-
     const gameApp =
         document.getElementById(
             "gameApp"
         );
-
 
     if (intro) {
 
@@ -2346,7 +2762,6 @@ function startGame() {
 
     }
 
-
     if (gameApp) {
 
         gameApp.classList.remove(
@@ -2355,11 +2770,9 @@ function startGame() {
 
     }
 
-
     showPage(
         "miningPage"
     );
-
 
     if (
         tg &&
@@ -2387,12 +2800,10 @@ function updatePlayerInfo() {
             "playerName"
         );
 
-
     const idElement =
         document.getElementById(
             "playerId"
         );
-
 
     if (nameElement) {
 
@@ -2436,7 +2847,6 @@ function updatePlayerInfo() {
 
     }
 
-
     if (idElement) {
 
         idElement.textContent =
@@ -2465,96 +2875,80 @@ function updateUI() {
             "balance"
         );
 
-
     const totalMined =
         document.getElementById(
             "totalMined"
         );
-
 
     const level =
         document.getElementById(
             "level"
         );
 
-
     const levelName =
         document.getElementById(
             "levelName"
         );
-
 
     const xpFill =
         document.getElementById(
             "xpFill"
         );
 
-
     const tapPower =
         document.getElementById(
             "tapPower"
         );
-
 
     const energy =
         document.getElementById(
             "energy"
         );
 
-
     const maxEnergy =
         document.getElementById(
             "maxEnergy"
         );
-
 
     const energyFill =
         document.getElementById(
             "energyFill"
         );
 
-
     const mineRate =
         document.getElementById(
             "mineRate"
         );
-
 
     const statsMineRate =
         document.getElementById(
             "statsMineRate"
         );
 
-
     const missionProgress =
         document.getElementById(
             "missionProgress"
         );
-
 
     const missionFill =
         document.getElementById(
             "missionFill"
         );
 
-
     const tapCost =
         document.getElementById(
             "tapCost"
         );
-
 
     const energyCost =
         document.getElementById(
             "energyCost"
         );
 
-
     const boostCost =
         document.getElementById(
             "boostCost"
         );
-
 
     if (balance) {
 
@@ -2565,7 +2959,6 @@ function updateUI() {
 
     }
 
-
     if (totalMined) {
 
         totalMined.textContent =
@@ -2575,14 +2968,12 @@ function updateUI() {
 
     }
 
-
     if (level) {
 
         level.textContent =
             game.level;
 
     }
-
 
     if (levelName) {
 
@@ -2593,7 +2984,6 @@ function updateUI() {
 
     }
 
-
     if (tapPower) {
 
         tapPower.textContent =
@@ -2601,10 +2991,8 @@ function updateUI() {
 
     }
 
-
     const effectiveMaxEnergy =
         getEffectiveMaxEnergy();
-
 
     if (energy) {
 
@@ -2615,7 +3003,6 @@ function updateUI() {
 
     }
 
-
     if (maxEnergy) {
 
         maxEnergy.textContent =
@@ -2623,10 +3010,8 @@ function updateUI() {
 
     }
 
-
     const effectiveMineRate =
         getEffectiveMineRate();
-
 
     if (mineRate) {
 
@@ -2638,7 +3023,6 @@ function updateUI() {
 
     }
 
-
     if (statsMineRate) {
 
         statsMineRate.textContent =
@@ -2648,7 +3032,6 @@ function updateUI() {
 
     }
 
-
     if (energyFill) {
 
         const percent =
@@ -2657,7 +3040,6 @@ function updateUI() {
                 game.energy /
                 effectiveMaxEnergy
             ) * 100;
-
 
         energyFill.style.width =
 
@@ -2674,12 +3056,10 @@ function updateUI() {
 
     }
 
-
     if (xpFill) {
 
         const required =
             game.level * 1000;
-
 
         const percent =
 
@@ -2687,7 +3067,6 @@ function updateUI() {
                 game.xp /
                 required
             ) * 100;
-
 
         xpFill.style.width =
 
@@ -2704,7 +3083,6 @@ function updateUI() {
 
     }
 
-
     if (missionProgress) {
 
         missionProgress.textContent =
@@ -2717,7 +3095,6 @@ function updateUI() {
 
     }
 
-
     if (missionFill) {
 
         const percent =
@@ -2729,12 +3106,10 @@ function updateUI() {
                 ) / 1000
             ) * 100;
 
-
         missionFill.style.width =
             percent + "%";
 
     }
-
 
     if (tapCost) {
 
@@ -2745,7 +3120,6 @@ function updateUI() {
 
     }
 
-
     if (energyCost) {
 
         energyCost.textContent =
@@ -2754,7 +3128,6 @@ function updateUI() {
             );
 
     }
-
 
     if (boostCost) {
 
@@ -2765,12 +3138,10 @@ function updateUI() {
 
     }
 
-
     const refCode =
         document.getElementById(
             "refCode"
         );
-
 
     if (refCode) {
 
@@ -2779,12 +3150,10 @@ function updateUI() {
 
     }
 
-
     const referralCount =
         document.getElementById(
             "referralCount"
         );
-
 
     if (referralCount) {
 
@@ -2793,12 +3162,10 @@ function updateUI() {
 
     }
 
-
     const referralEarnings =
         document.getElementById(
             "referralEarnings"
         );
-
 
     if (referralEarnings) {
 
@@ -2809,12 +3176,10 @@ function updateUI() {
 
     }
 
-
     const referralName =
         document.getElementById(
             "referralName"
         );
-
 
     if (referralName) {
 
@@ -2845,42 +3210,35 @@ function updateUI() {
     const vip =
         getVIPData();
 
-
     const vipLevel =
         document.getElementById(
             "vipLevel"
         );
-
 
     const vipLevelName =
         document.getElementById(
             "vipLevelName"
         );
 
-
     const vipMiningBonus =
         document.getElementById(
             "vipMiningBonus"
         );
-
 
     const vipEnergyBonus =
         document.getElementById(
             "vipEnergyBonus"
         );
 
-
     const vipDailyReward =
         document.getElementById(
             "vipDailyReward"
         );
 
-
     const vipCurrentName =
         document.getElementById(
             "vipCurrentName"
         );
-
 
     if (vipLevel) {
 
@@ -2890,14 +3248,12 @@ function updateUI() {
 
     }
 
-
     if (vipLevelName) {
 
         vipLevelName.textContent =
             vip.name;
 
     }
-
 
     if (vipMiningBonus) {
 
@@ -2908,7 +3264,6 @@ function updateUI() {
 
     }
 
-
     if (vipEnergyBonus) {
 
         vipEnergyBonus.textContent =
@@ -2916,7 +3271,6 @@ function updateUI() {
             vip.energyBonus;
 
     }
-
 
     if (vipDailyReward) {
 
@@ -2939,7 +3293,6 @@ function updateUI() {
 
     }
 
-
     if (vipCurrentName) {
 
         vipCurrentName.textContent =
@@ -2947,12 +3300,10 @@ function updateUI() {
 
     }
 
-
     const vipDailyButton =
         document.getElementById(
             "claimVipReward"
         );
-
 
     if (vipDailyButton) {
 
@@ -2989,7 +3340,6 @@ function updateUI() {
 
     }
 
-
     for (
         let levelNumber = 1;
         levelNumber <= 5;
@@ -3003,29 +3353,24 @@ function updateUI() {
                 '"]'
             );
 
-
         if (!card) {
 
             continue;
 
         }
 
-
         const buyButton =
             card.querySelector(
                 ".vip-buy-btn"
             );
-
 
         const priceElement =
             card.querySelector(
                 ".vip-price"
             );
 
-
         const vipCardData =
             VIP_LEVELS[levelNumber];
-
 
         if (priceElement) {
 
@@ -3036,7 +3381,6 @@ function updateUI() {
                 " BSHIB";
 
         }
-
 
         if (buyButton) {
 
@@ -3063,7 +3407,6 @@ function updateUI() {
             }
 
         }
-
 
         if (
             game.vipLevel ===
@@ -3115,7 +3458,6 @@ function formatMiningRate(number) {
 
     }
 
-
     return number.toFixed(2);
 
 }
@@ -3133,13 +3475,11 @@ function getLevelName(level) {
 
     }
 
-
     if (level >= 15) {
 
         return "Shiba Master";
 
     }
-
 
     if (level >= 10) {
 
@@ -3147,13 +3487,11 @@ function getLevelName(level) {
 
     }
 
-
     if (level >= 5) {
 
         return "Shiba Warrior";
 
     }
-
 
     return "Shiba Rookie";
 
@@ -3168,10 +3506,8 @@ function addXP(amount) {
 
     game.xp += amount;
 
-
     const required =
         game.level * 1000;
-
 
     if (
         game.xp >=
@@ -3182,15 +3518,12 @@ function addXP(amount) {
 
         game.level++;
 
-
         saveGame();
-
 
         console.log(
             "💾 Level saved:",
             game.level
         );
-
 
         showToast(
             "🎉 Level Up! Level " +
@@ -3220,10 +3553,8 @@ function mine() {
 
     }
 
-
     const effectiveMineRate =
         getEffectiveMineRate();
-
 
     const amount =
 
@@ -3231,30 +3562,23 @@ function mine() {
         effectiveMineRate -
         1;
 
-
     game.balance +=
         amount;
-
 
     game.totalMined +=
         amount;
 
-
     game.energy -=
         1;
-
 
     game.missionProgress +=
         amount;
 
-
     addXP(amount);
-
 
     createCoinEffect(
         amount
     );
-
 
     if (
         tg &&
@@ -3267,7 +3591,6 @@ function mine() {
             );
 
     }
-
 
     saveGame();
 
@@ -3290,34 +3613,26 @@ setInterval(() => {
 
     }
 
-
     const amount =
         getEffectiveMineRate();
-
 
     game.balance +=
         amount;
 
-
     game.totalMined +=
         amount;
-
 
     game.energy -=
         1;
 
-
     game.missionProgress +=
         amount;
 
-
     addXP(amount);
-
 
     saveGame();
 
     updateUI();
-
 
 }, 1000);
 
@@ -3331,14 +3646,12 @@ setInterval(() => {
     const effectiveMaxEnergy =
         getEffectiveMaxEnergy();
 
-
     if (
         game.energy <
         effectiveMaxEnergy
     ) {
 
         game.energy += 5;
-
 
         if (
             game.energy >
@@ -3349,7 +3662,6 @@ setInterval(() => {
                 effectiveMaxEnergy;
 
         }
-
 
         saveGame();
 
@@ -3421,7 +3733,6 @@ function upgradeTap() {
     const cost =
         getTapCost();
 
-
     if (
         game.balance <
         cost
@@ -3435,23 +3746,18 @@ function upgradeTap() {
 
     }
 
-
     game.balance -=
         cost;
-
 
     game.tapPower +=
         1;
 
-
     game.tapLevel +=
         1;
-
 
     showToast(
         "⚡ Tap Power upgraded!"
     );
-
 
     saveGame();
 
@@ -3469,7 +3775,6 @@ function upgradeEnergy() {
     const cost =
         getEnergyCost();
 
-
     if (
         game.balance <
         cost
@@ -3483,31 +3788,24 @@ function upgradeEnergy() {
 
     }
 
-
     game.balance -=
         cost;
-
 
     game.maxEnergy +=
         250;
 
-
     const effectiveMaxEnergy =
         getEffectiveMaxEnergy();
-
 
     game.energy =
         effectiveMaxEnergy;
 
-
     game.energyLevel +=
         1;
-
 
     showToast(
         "🔋 Energy upgraded!"
     );
-
 
     saveGame();
 
@@ -3525,7 +3823,6 @@ function upgradeBoost() {
     const cost =
         getBoostCost();
 
-
     if (
         game.balance <
         cost
@@ -3539,23 +3836,18 @@ function upgradeBoost() {
 
     }
 
-
     game.balance -=
         cost;
-
 
     game.mineRate +=
         1;
 
-
     game.boostLevel +=
         1;
-
 
     showToast(
         "🚀 Mining Boost upgraded!"
     );
-
 
     saveGame();
 
@@ -3575,7 +3867,6 @@ function setupReferral() {
             "refCode"
         );
 
-
     if (refCode) {
 
         refCode.textContent =
@@ -3583,12 +3874,10 @@ function setupReferral() {
 
     }
 
-
     const referralCount =
         document.getElementById(
             "referralCount"
         );
-
 
     if (referralCount) {
 
@@ -3597,12 +3886,10 @@ function setupReferral() {
 
     }
 
-
     const referralEarnings =
         document.getElementById(
             "referralEarnings"
         );
-
 
     if (referralEarnings) {
 
@@ -3613,12 +3900,10 @@ function setupReferral() {
 
     }
 
-
     const referralName =
         document.getElementById(
             "referralName"
         );
-
 
     if (referralName) {
 
@@ -3652,7 +3937,6 @@ function copyReferral() {
 
     const code =
         getReferralCode();
-
 
     if (
         navigator.clipboard
@@ -3695,7 +3979,6 @@ function inviteFriends() {
     const link =
         getReferralLink();
 
-
     const shareUrl =
 
         "https://t.me/share/url?url=" +
@@ -3707,7 +3990,6 @@ function inviteFriends() {
         encodeURIComponent(
             "🐕 Join Baby Shiba Inu Mining!"
         );
-
 
     if (
         tg &&
@@ -3760,7 +4042,6 @@ function claimMission() {
 
     }
 
-
     if (game.missionClaimed) {
 
         showToast(
@@ -3771,19 +4052,15 @@ function claimMission() {
 
     }
 
-
     game.balance +=
         100;
-
 
     game.missionClaimed =
         true;
 
-
     showToast(
         "🎁 +100 BSHIB Mission Reward"
     );
-
 
     saveGame();
 
@@ -3814,12 +4091,10 @@ function toggleSound() {
     game.sound =
         !game.sound;
 
-
     const button =
         document.getElementById(
             "soundBtn"
         );
-
 
     if (button) {
 
@@ -3830,7 +4105,6 @@ function toggleSound() {
                 : "🔇";
 
     }
-
 
     saveGame();
 
@@ -3848,12 +4122,10 @@ function showToast(message) {
             "toast"
         );
 
-
     const toastText =
         document.getElementById(
             "toastText"
         );
-
 
     if (
         !toast ||
@@ -3864,15 +4136,12 @@ function showToast(message) {
 
     }
 
-
     toastText.textContent =
         message;
-
 
     toast.classList.add(
         "show"
     );
-
 
     setTimeout(() => {
 
@@ -3896,27 +4165,22 @@ function createCoinEffect(amount) {
             "effects"
         );
 
-
     if (!effects) {
 
         return;
 
     }
 
-
     const coin =
         document.createElement(
             "div"
         );
 
-
     coin.className =
         "coin-effect";
 
-
     coin.textContent =
         "+" + amount;
-
 
     coin.style.left =
 
@@ -3925,15 +4189,12 @@ function createCoinEffect(amount) {
             Math.random() * 10
         ) + "%";
 
-
     coin.style.top =
         "45%";
-
 
     effects.appendChild(
         coin
     );
-
 
     setTimeout(() => {
 
@@ -3952,10 +4213,8 @@ function buyEnergyPack() {
 
     const cost = 250;
 
-
     const effectiveMaxEnergy =
         getEffectiveMaxEnergy();
-
 
     if (
         game.energy >=
@@ -3970,7 +4229,6 @@ function buyEnergyPack() {
 
     }
 
-
     if (
         game.balance <
         cost
@@ -3984,10 +4242,8 @@ function buyEnergyPack() {
 
     }
 
-
     game.balance -=
         cost;
-
 
     game.energy =
 
@@ -3999,11 +4255,9 @@ function buyEnergyPack() {
 
         );
 
-
     saveGame();
 
     updateUI();
-
 
     showToast(
         "⚡ +500 Energy!"
@@ -4020,7 +4274,6 @@ function buyMiningBoost() {
 
     const cost = 500;
 
-
     if (
         game.balance <
         cost
@@ -4034,19 +4287,15 @@ function buyMiningBoost() {
 
     }
 
-
     game.balance -=
         cost;
-
 
     game.mineRate +=
         1;
 
-
     saveGame();
 
     updateUI();
-
 
     showToast(
         "🚀 Mining Boost +1!"
@@ -4066,72 +4315,60 @@ function setupButtons() {
             "startGame"
         );
 
-
     const mineButton =
         document.getElementById(
             "shibaButton"
         );
-
 
     const soundButton =
         document.getElementById(
             "soundBtn"
         );
 
-
     const upgradeTapButton =
         document.getElementById(
             "upgradeTap"
         );
-
 
     const upgradeEnergyButton =
         document.getElementById(
             "upgradeEnergy"
         );
 
-
     const upgradeBoostButton =
         document.getElementById(
             "upgradeBoost"
         );
-
 
     const buyEnergyPackButton =
         document.getElementById(
             "buyEnergyPack"
         );
 
-
     const buyMiningBoostButton =
         document.getElementById(
             "buyMiningBoost"
         );
-
 
     const copyRefButton =
         document.getElementById(
             "copyRef"
         );
 
-
     const inviteButton =
         document.getElementById(
             "inviteBtn"
         );
-
 
     const claimMissionButton =
         document.getElementById(
             "claimMission"
         );
 
-
     const walletButton =
         document.getElementById(
             "walletBtn"
         );
-
 
     const claimVIPButton =
         document.getElementById(
@@ -4148,7 +4385,6 @@ function setupButtons() {
 
     }
 
-
     if (mineButton) {
 
         mineButton.addEventListener(
@@ -4157,7 +4393,6 @@ function setupButtons() {
         );
 
     }
-
 
     if (soundButton) {
 
@@ -4168,7 +4403,6 @@ function setupButtons() {
 
     }
 
-
     if (upgradeTapButton) {
 
         upgradeTapButton.addEventListener(
@@ -4177,7 +4411,6 @@ function setupButtons() {
         );
 
     }
-
 
     if (upgradeEnergyButton) {
 
@@ -4188,7 +4421,6 @@ function setupButtons() {
 
     }
 
-
     if (upgradeBoostButton) {
 
         upgradeBoostButton.addEventListener(
@@ -4197,7 +4429,6 @@ function setupButtons() {
         );
 
     }
-
 
     if (buyEnergyPackButton) {
 
@@ -4208,7 +4439,6 @@ function setupButtons() {
 
     }
 
-
     if (buyMiningBoostButton) {
 
         buyMiningBoostButton.addEventListener(
@@ -4217,7 +4447,6 @@ function setupButtons() {
         );
 
     }
-
 
     if (copyRefButton) {
 
@@ -4228,7 +4457,6 @@ function setupButtons() {
 
     }
 
-
     if (inviteButton) {
 
         inviteButton.addEventListener(
@@ -4237,7 +4465,6 @@ function setupButtons() {
         );
 
     }
-
 
     if (claimMissionButton) {
 
@@ -4248,7 +4475,6 @@ function setupButtons() {
 
     }
 
-
     if (walletButton) {
 
         walletButton.addEventListener(
@@ -4257,7 +4483,6 @@ function setupButtons() {
         );
 
     }
-
 
     if (claimVIPButton) {
 
@@ -4268,12 +4493,10 @@ function setupButtons() {
 
     }
 
-
     const vipBuyButtons =
         document.querySelectorAll(
             ".vip-buy-btn"
         );
-
 
     vipBuyButtons.forEach(
         button => {
@@ -4286,7 +4509,6 @@ function setupButtons() {
                         Number(
                             this.dataset.vipLevel
                         );
-
 
                     buyVIP(level);
 
@@ -4315,7 +4537,6 @@ async function initApp() {
         user.id
     );
 
-
     console.log(
         "👤 Telegram username:",
         user.username
@@ -4323,7 +4544,7 @@ async function initApp() {
 
 
     // ======================================
-    // LOCAL / TELEGRAM BACKUP
+    // LOAD LOCAL + TELEGRAM SAFELY
     // ======================================
 
     await loadGameFromTelegram();
@@ -4333,7 +4554,11 @@ async function initApp() {
 
 
     // ======================================
-    // SUPABASE AUTH + DATABASE LOAD
+    // SUPABASE AUTH
+    //
+    // IMPORTANT:
+    // Authentication only.
+    // It does NOT overwrite game state.
     // ======================================
 
     const supabaseData =
@@ -4345,7 +4570,7 @@ async function initApp() {
     ) {
 
         console.log(
-            "☁️ Supabase is now the main game database"
+            "☁️ Supabase connected - SAVE mode active"
         );
 
     } else {
@@ -4370,7 +4595,6 @@ async function initApp() {
 
     }
 
-
     if (
         game.vipLevel < 0 ||
         game.vipLevel > 5
@@ -4379,7 +4603,6 @@ async function initApp() {
         game.vipLevel = 0;
 
     }
-
 
     if (
         typeof game.vipRewardClaimed !==
@@ -4391,7 +4614,6 @@ async function initApp() {
 
     }
 
-
     if (
         typeof game.vipLastRewardDate !==
         "string"
@@ -4401,6 +4623,101 @@ async function initApp() {
             "";
 
     }
+
+
+    // ======================================
+    // BASIC GAME DATA SAFETY
+    // ======================================
+
+    game.balance =
+        Math.max(
+            0,
+            safeNumber(
+                game.balance,
+                0
+            )
+        );
+
+    game.totalMined =
+        Math.max(
+            0,
+            safeNumber(
+                game.totalMined,
+                0
+            )
+        );
+
+    game.level =
+        Math.max(
+            1,
+            safeNumber(
+                game.level,
+                1
+            )
+        );
+
+    game.xp =
+        Math.max(
+            0,
+            safeNumber(
+                game.xp,
+                0
+            )
+        );
+
+    game.tapPower =
+        Math.max(
+            1,
+            safeNumber(
+                game.tapPower,
+                1
+            )
+        );
+
+    game.maxEnergy =
+        Math.max(
+            1250,
+            safeNumber(
+                game.maxEnergy,
+                1250
+            )
+        );
+
+    game.mineRate =
+        Math.max(
+            4,
+            safeNumber(
+                game.mineRate,
+                4
+            )
+        );
+
+    game.tapLevel =
+        Math.max(
+            1,
+            safeNumber(
+                game.tapLevel,
+                1
+            )
+        );
+
+    game.energyLevel =
+        Math.max(
+            1,
+            safeNumber(
+                game.energyLevel,
+                1
+            )
+        );
+
+    game.boostLevel =
+        Math.max(
+            1,
+            safeNumber(
+                game.boostLevel,
+                1
+            )
+        );
 
 
     // ======================================
@@ -4428,7 +4745,7 @@ async function initApp() {
 
 
     // ======================================
-    // FINAL SAVE
+    // FINAL SAFE SAVE
     // ======================================
 
     if (
@@ -4445,66 +4762,66 @@ async function initApp() {
     // ======================================
 
     console.log(
-        "🐕 Baby Shiba Inu App 3.0 Ready"
+        "🐕 Baby Shiba Inu App 3.1 Ready"
     );
-
 
     console.log(
         "Telegram ID:",
         user.id
     );
 
-
     console.log(
         "Username:",
         user.username
     );
-
 
     console.log(
         "Display Name:",
         getUserDisplayName(user)
     );
 
-
     console.log(
         "Referral Code:",
         getReferralCode()
     );
-
 
     console.log(
         "Referral Link:",
         getReferralLink()
     );
 
-
     console.log(
         "VIP Level:",
         game.vipLevel
     );
-
 
     console.log(
         "VIP Data:",
         getVIPData()
     );
 
-
     console.log(
         "Pending Referral:",
         game.pendingReferral
     );
-
 
     console.log(
         "Supabase Ready:",
         supabaseReady
     );
 
+    console.log(
+        "💰 FINAL BALANCE:",
+        game.balance
+    );
 
     console.log(
-        "Current Game:",
+        "⛏️ FINAL MINE RATE:",
+        game.mineRate
+    );
+
+    console.log(
+        "🐕 Current Game:",
         game
     );
 
