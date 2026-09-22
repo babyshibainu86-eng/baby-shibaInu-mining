@@ -68,7 +68,7 @@ button {
 
 .intro-page {
     min-height: 100vh;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 30px 20px;
@@ -82,6 +82,9 @@ button {
         );
 }
 
+.intro-page.active {
+    display: flex;
+}
 .intro-content {
     width: 100%;
     max-width: 380px;
