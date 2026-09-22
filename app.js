@@ -4890,3 +4890,1406 @@ window.addEventListener(
 
     }
 );
+// ==========================================
+// BABY SHIBA INU
+// FINAL SAFE RECOVERY PATCH
+// APP VERSION 3.1
+//
+// IMPORTANT:
+// Paste this ENTIRE block at the VERY END
+// of app.js
+//
+// This recovery layer:
+// 1. Disables Supabase during recovery
+// 2. Scans all local Baby Shiba backups
+// 3. Reads Telegram CloudStorage
+// 4. Finds the strongest available backup
+// 5. Restores the game
+// 6. Saves the recovered state locally + Telegram
+// 7. Blocks saving before recovery finishes
+// ==========================================
+
+
+let recoveryReady = false;
+let recoveryCompleted = false;
+
+
+// ==========================================
+// RECOVERY NUMBER
+// ==========================================
+
+function recoveryNumber(value, fallback = 0) {
+
+    const number =
+        Number(value);
+
+    if (
+        Number.isFinite(number)
+    ) {
+
+        return number;
+
+    }
+
+    return fallback;
+
+}
+
+
+// ==========================================
+// NORMALIZE RECOVERY STATE
+// ==========================================
+
+function normalizeRecoveryState(raw) {
+
+    const source =
+        raw &&
+        typeof raw === "object"
+
+            ? raw
+
+            : {};
+
+
+    const state = {
+
+        ...defaultState,
+
+        ...source
+
+    };
+
+
+    state.balance =
+        Math.max(
+            0,
+            recoveryNumber(
+                source.balance,
+                0
+            )
+        );
+
+
+    state.totalMined =
+        Math.max(
+            0,
+            recoveryNumber(
+                source.totalMined,
+                0
+            )
+        );
+
+
+    state.level =
+        Math.max(
+            1,
+            Math.floor(
+                recoveryNumber(
+                    source.level,
+                    1
+                )
+            )
+        );
+
+
+    state.xp =
+        Math.max(
+            0,
+            recoveryNumber(
+                source.xp,
+                0
+            )
+        );
+
+
+    state.tapPower =
+        Math.max(
+            1,
+            Math.floor(
+                recoveryNumber(
+                    source.tapPower,
+                    1
+                )
+            )
+        );
+
+
+    state.energy =
+        Math.max(
+            0,
+            recoveryNumber(
+                source.energy,
+                1250
+            )
+        );
+
+
+    state.maxEnergy =
+        Math.max(
+            1250,
+            Math.floor(
+                recoveryNumber(
+                    source.maxEnergy,
+                    1250
+                )
+            )
+        );
+
+
+    state.mineRate =
+        Math.max(
+            4,
+            recoveryNumber(
+                source.mineRate,
+                4
+            )
+        );
+
+
+    state.tapLevel =
+        Math.max(
+            1,
+            Math.floor(
+                recoveryNumber(
+                    source.tapLevel,
+                    1
+                )
+            )
+        );
+
+
+    state.energyLevel =
+        Math.max(
+            1,
+            Math.floor(
+                recoveryNumber(
+                    source.energyLevel,
+                    1
+                )
+            )
+        );
+
+
+    state.boostLevel =
+        Math.max(
+            1,
+            Math.floor(
+                recoveryNumber(
+                    source.boostLevel,
+                    1
+                )
+            )
+        );
+
+
+    state.missionProgress =
+        Math.max(
+            0,
+            recoveryNumber(
+                source.missionProgress,
+                0
+            )
+        );
+
+
+    state.missionClaimed =
+        Boolean(
+            source.missionClaimed
+        );
+
+
+    state.sound =
+        source.sound !== false;
+
+
+    // ======================================
+    // VIP
+    // ======================================
+
+    state.vipLevel =
+        Math.max(
+            0,
+            Math.min(
+                5,
+                Math.floor(
+                    recoveryNumber(
+                        source.vipLevel,
+                        0
+                    )
+                )
+            )
+        );
+
+
+    state.vipRewardClaimed =
+        Boolean(
+            source.vipRewardClaimed
+        );
+
+
+    state.vipLastRewardDate =
+
+        typeof source.vipLastRewardDate ===
+        "string"
+
+            ? source.vipLastRewardDate
+
+            : "";
+
+
+    // ======================================
+    // REFERRAL
+    // ======================================
+
+    state.referralCode =
+
+        typeof source.referralCode ===
+        "string"
+
+            ? source.referralCode
+
+            : "";
+
+
+    state.referralCount =
+        Math.max(
+            0,
+            Math.floor(
+                recoveryNumber(
+                    source.referralCount,
+                    0
+                )
+            )
+        );
+
+
+    state.referralEarnings =
+        Math.max(
+            0,
+            recoveryNumber(
+                source.referralEarnings,
+                0
+            )
+        );
+
+
+    state.referredBy =
+
+        typeof source.referredBy ===
+        "string"
+
+            ? source.referredBy
+
+            : "";
+
+
+    state.referrals =
+
+        Array.isArray(
+            source.referrals
+        )
+
+            ? source.referrals
+
+            : [];
+
+
+    state.pendingReferral =
+        source.pendingReferral ||
+        null;
+
+
+    state.referralProcessed =
+        Boolean(
+            source.referralProcessed
+        );
+
+
+    state.savedAt =
+        recoveryNumber(
+            source.savedAt,
+            0
+        );
+
+
+    return state;
+
+}
+
+
+// ==========================================
+// RECOVERY RANK
+// ==========================================
+
+function recoveryRank(state) {
+
+    const current =
+        normalizeRecoveryState(
+            state
+        );
+
+
+    return [
+
+        current.balance,
+
+        current.totalMined,
+
+        current.level,
+
+        current.tapPower,
+
+        current.mineRate,
+
+        current.maxEnergy,
+
+        current.tapLevel,
+
+        current.energyLevel,
+
+        current.boostLevel,
+
+        current.xp
+
+    ];
+
+}
+
+
+// ==========================================
+// COMPARE TWO BACKUPS
+// ==========================================
+
+function compareRecoveryStates(
+    first,
+    second
+) {
+
+    const firstRank =
+        recoveryRank(
+            first
+        );
+
+
+    const secondRank =
+        recoveryRank(
+            second
+        );
+
+
+    for (
+        let i = 0;
+        i < firstRank.length;
+        i++
+    ) {
+
+        if (
+            firstRank[i] >
+            secondRank[i]
+        ) {
+
+            return 1;
+
+        }
+
+
+        if (
+            firstRank[i] <
+            secondRank[i]
+        ) {
+
+            return -1;
+
+        }
+
+    }
+
+
+    return 0;
+
+}
+
+
+// ==========================================
+// SCAN ALL LOCAL BACKUPS
+// ==========================================
+
+function readRecoveryLocalCandidates() {
+
+    const candidates = [];
+
+
+    try {
+
+        for (
+            let i = 0;
+            i < localStorage.length;
+            i++
+        ) {
+
+            const key =
+                localStorage.key(i);
+
+
+            if (
+                !key ||
+                !key.startsWith(
+                    "babyShibaGame_"
+                )
+            ) {
+
+                continue;
+
+            }
+
+
+            try {
+
+                const raw =
+                    localStorage.getItem(
+                        key
+                    );
+
+
+                if (!raw) {
+
+                    continue;
+
+                }
+
+
+                const parsed =
+                    JSON.parse(
+                        raw
+                    );
+
+
+                if (
+                    !parsed ||
+                    typeof parsed !==
+                    "object"
+                ) {
+
+                    continue;
+
+                }
+
+
+                candidates.push({
+
+                    source:
+                        "LOCAL: " +
+                        key,
+
+                    state:
+                        normalizeRecoveryState(
+                            parsed
+                        )
+
+                });
+
+
+            } catch (error) {
+
+                console.log(
+                    "⚠️ Invalid local backup skipped:",
+                    key
+                );
+
+            }
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "⚠️ LocalStorage recovery scan failed:",
+            error
+        );
+
+    }
+
+
+    return candidates;
+
+}
+
+
+// ==========================================
+// RECOVERY SUMMARY
+// ==========================================
+
+function recoverySummary(
+    candidate
+) {
+
+    const state =
+        normalizeRecoveryState(
+            candidate.state
+        );
+
+
+    return (
+
+        candidate.source +
+
+        " | Balance: " +
+        formatNumber(
+            state.balance
+        ) +
+
+        " | Total: " +
+        formatNumber(
+            state.totalMined
+        ) +
+
+        " | Level: " +
+        state.level +
+
+        " | Tap: " +
+        state.tapLevel +
+
+        " | Energy: " +
+        Math.floor(
+            state.energy
+        ) +
+        "/" +
+        state.maxEnergy +
+
+        " | Mine: " +
+        formatMiningRate(
+            state.mineRate
+        )
+
+    );
+
+}
+
+
+// ==========================================
+// CHOOSE BEST RECOVERY
+// ==========================================
+
+function chooseRecoveryCandidate(
+    candidates
+) {
+
+    if (
+        !candidates.length
+    ) {
+
+        return null;
+
+    }
+
+
+    const currentKey =
+
+        user &&
+        user.id
+
+            ? (
+                "babyShibaGame_" +
+                String(
+                    user.id
+                )
+            )
+
+            : "babyShibaGame_GUEST";
+
+
+    // ======================================
+    // FIRST PRIORITY:
+    // CURRENT USER + CLOUD
+    // ======================================
+
+    const currentCandidates =
+        candidates.filter(
+            candidate =>
+
+                candidate.source ===
+                "LOCAL: " +
+                currentKey
+
+                ||
+
+                candidate.source ===
+                "CLOUD"
+        );
+
+
+    const usableCurrent =
+        currentCandidates.filter(
+            candidate => {
+
+                const state =
+                    normalizeRecoveryState(
+                        candidate.state
+                    );
+
+
+                return (
+
+                    state.balance > 0 ||
+
+                    state.totalMined > 0 ||
+
+                    state.level > 1 ||
+
+                    state.tapLevel > 1 ||
+
+                    state.energyLevel > 1 ||
+
+                    state.boostLevel > 1 ||
+
+                    state.mineRate > 4 ||
+
+                    state.maxEnergy > 1250
+
+                );
+
+            }
+        );
+
+
+    // ======================================
+    // IF CURRENT USER HAS DATA:
+    // USE ONLY CURRENT/CLOUD DATA
+    // ======================================
+
+    const pool =
+
+        usableCurrent.length
+
+            ? usableCurrent
+
+            : candidates;
+
+
+    let best =
+        pool[0];
+
+
+    for (
+        let i = 1;
+        i < pool.length;
+        i++
+    ) {
+
+        if (
+            compareRecoveryStates(
+                pool[i].state,
+                best.state
+            ) > 0
+        ) {
+
+            best =
+                pool[i];
+
+        }
+
+    }
+
+
+    return best;
+
+}
+
+
+// ==========================================
+// SAVE RECOVERED STATE LOCALLY
+// ==========================================
+
+function saveRecoveredStateToLocal() {
+
+    try {
+
+        const key =
+            getGameStorageKey();
+
+
+        localStorage.setItem(
+
+            key,
+
+            JSON.stringify(
+                game
+            )
+
+        );
+
+
+        console.log(
+            "✅ Recovery saved locally:",
+            key
+        );
+
+
+    } catch (error) {
+
+        console.log(
+            "⚠️ Recovery LocalStorage save failed:",
+            error
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// SAVE RECOVERED STATE TO TELEGRAM
+// ==========================================
+
+function saveRecoveredStateToCloud() {
+
+    return new Promise(
+        resolve => {
+
+            const storage =
+
+                window.Telegram &&
+
+                Telegram.WebApp &&
+
+                Telegram.WebApp.CloudStorage;
+
+
+            if (!storage) {
+
+                console.log(
+                    "⚠️ Telegram CloudStorage unavailable"
+                );
+
+                resolve(false);
+
+                return;
+
+            }
+
+
+            try {
+
+                storage.setItem(
+
+                    "game",
+
+                    JSON.stringify(
+                        game
+                    ),
+
+                    function(
+                        error,
+                        success
+                    ) {
+
+                        if (error) {
+
+                            console.log(
+                                "⚠️ Recovery CloudStorage save failed:",
+                                error
+                            );
+
+                            resolve(false);
+
+                            return;
+
+                        }
+
+
+                        console.log(
+                            "✅ Recovery saved to Telegram CloudStorage:",
+                            success
+                        );
+
+
+                        resolve(true);
+
+                    }
+
+                );
+
+
+            } catch (error) {
+
+                console.log(
+                    "⚠️ Recovery CloudStorage exception:",
+                    error
+                );
+
+                resolve(false);
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// DISABLE SUPABASE AUTH DURING RECOVERY
+// ==========================================
+
+authenticateWithSupabase =
+    async function() {
+
+        supabaseReady =
+            false;
+
+
+        console.log(
+            "🛑 Supabase disabled during recovery."
+        );
+
+
+        return null;
+
+    };
+
+
+// ==========================================
+// DISABLE SUPABASE SAVE
+// ==========================================
+
+saveGameToSupabase =
+    async function() {
+
+        return false;
+
+    };
+
+
+queueSupabaseSave =
+    function() {
+
+        return;
+
+    };
+
+
+// ==========================================
+// SAFE SAVE OVERRIDE
+// ==========================================
+
+saveGame =
+    function() {
+
+
+        // ==================================
+        // NEVER SAVE BEFORE RECOVERY
+        // ==================================
+
+        if (
+            !recoveryReady
+        ) {
+
+            console.log(
+                "⏳ Save blocked until recovery finishes."
+            );
+
+            return;
+
+        }
+
+
+        game.savedAt =
+            Date.now();
+
+
+        // ==================================
+        // LOCAL BACKUP
+        // ==================================
+
+        saveLocalBackup();
+
+
+        // ==================================
+        // TELEGRAM CLOUD STORAGE
+        // ==================================
+
+        if (
+            saveInProgress
+        ) {
+
+            savePending =
+                true;
+
+            return;
+
+        }
+
+
+        const storage =
+
+            window.Telegram &&
+
+            Telegram.WebApp &&
+
+            Telegram.WebApp.CloudStorage;
+
+
+        if (!storage) {
+
+            return;
+
+        }
+
+
+        try {
+
+            saveInProgress =
+                true;
+
+            savePending =
+                false;
+
+
+            storage.setItem(
+
+                "game",
+
+                JSON.stringify(
+                    game
+                ),
+
+                function(
+                    error,
+                    success
+                ) {
+
+
+                    saveInProgress =
+                        false;
+
+
+                    if (error) {
+
+                        console.log(
+                            "❌ CloudStorage save error:",
+                            error
+                        );
+
+                    } else {
+
+                        console.log(
+                            "☁️ CloudStorage saved:",
+                            success
+                        );
+
+                    }
+
+
+                    if (
+                        savePending
+                    ) {
+
+                        savePending =
+                            false;
+
+
+                        saveGame();
+
+                    }
+
+                }
+
+            );
+
+
+        } catch (error) {
+
+            saveInProgress =
+                false;
+
+
+            console.log(
+                "❌ Save exception:",
+                error
+            );
+
+        }
+
+    };
+
+
+// ==========================================
+// FULL RECOVERY LOAD
+// ==========================================
+
+loadGameFromTelegram =
+    async function() {
+
+
+        console.log(
+            "🚑 ================================="
+        );
+
+        console.log(
+            "🚑 BSHIB RECOVERY STARTED"
+        );
+
+        console.log(
+            "🚑 ================================="
+        );
+
+
+        // ==================================
+        // STEP 1
+        // SCAN LOCAL STORAGE
+        // ==================================
+
+        const candidates =
+            readRecoveryLocalCandidates();
+
+
+        // ==================================
+        // STEP 2
+        // READ TELEGRAM CLOUD STORAGE
+        // ==================================
+
+        const storage =
+
+            window.Telegram &&
+
+            Telegram.WebApp &&
+
+            Telegram.WebApp.CloudStorage;
+
+
+        await new Promise(
+            resolve => {
+
+
+                if (!storage) {
+
+                    resolve();
+
+                    return;
+
+                }
+
+
+                try {
+
+                    storage.getItem(
+
+                        "game",
+
+                        function(
+                            error,
+                            value
+                        ) {
+
+
+                            if (error) {
+
+                                console.log(
+                                    "⚠️ CloudStorage recovery read failed:",
+                                    error
+                                );
+
+                                resolve();
+
+                                return;
+
+                            }
+
+
+                            if (value) {
+
+                                try {
+
+                                    const parsed =
+                                        JSON.parse(
+                                            value
+                                        );
+
+
+                                    if (
+                                        parsed &&
+                                        typeof parsed ===
+                                        "object"
+                                    ) {
+
+                                        candidates.push({
+
+                                            source:
+                                                "CLOUD",
+
+                                            state:
+                                                normalizeRecoveryState(
+                                                    parsed
+                                                )
+
+                                        });
+
+                                    }
+
+
+                                } catch (error) {
+
+                                    console.log(
+                                        "⚠️ CloudStorage JSON invalid"
+                                    );
+
+                                }
+
+                            } else {
+
+                                console.log(
+                                    "ℹ️ CloudStorage has no game data."
+                                );
+
+                            }
+
+
+                            resolve();
+
+                        }
+
+                    );
+
+
+                } catch (error) {
+
+                    console.log(
+                        "⚠️ CloudStorage recovery exception:",
+                        error
+                    );
+
+
+                    resolve();
+
+                }
+
+            }
+        );
+
+
+        // ==================================
+        // STEP 3
+        // SHOW ALL FOUND BACKUPS
+        // ==================================
+
+        console.log(
+            "🔎 ================================="
+        );
+
+        console.log(
+            "🔎 RECOVERY BACKUPS FOUND:",
+            candidates.length
+        );
+
+        console.log(
+            "🔎 ================================="
+        );
+
+
+        candidates.forEach(
+            candidate => {
+
+                console.log(
+                    "🔎",
+                    recoverySummary(
+                        candidate
+                    )
+                );
+
+            }
+        );
+
+
+        // ==================================
+        // STEP 4
+        // CHOOSE BEST BACKUP
+        // ==================================
+
+        const best =
+            chooseRecoveryCandidate(
+                candidates
+            );
+
+
+        if (best) {
+
+            game =
+                normalizeRecoveryState(
+                    best.state
+                );
+
+
+            console.log(
+                "🏆 ================================="
+            );
+
+            console.log(
+                "🏆 BEST RECOVERY SOURCE:",
+                best.source
+            );
+
+            console.log(
+                "🏆 ================================="
+            );
+
+
+            console.log(
+                "💰 RECOVERED BALANCE:",
+                game.balance
+            );
+
+            console.log(
+                "⛏️ RECOVERED MINE RATE:",
+                game.mineRate
+            );
+
+            console.log(
+                "⭐ RECOVERED LEVEL:",
+                game.level
+            );
+
+            console.log(
+                "⚡ RECOVERED ENERGY:",
+                game.energy
+            );
+
+            console.log(
+                "📈 RECOVERED XP:",
+                game.xp
+            );
+
+            console.log(
+                "💎 RECOVERED TOTAL MINED:",
+                game.totalMined
+            );
+
+            console.log(
+                "⚡ RECOVERED TAP LEVEL:",
+                game.tapLevel
+            );
+
+            console.log(
+                "🔋 RECOVERED ENERGY LEVEL:",
+                game.energyLevel
+            );
+
+            console.log(
+                "🚀 RECOVERED BOOST LEVEL:",
+                game.boostLevel
+            );
+
+        } else {
+
+            // ==================================
+            // NO BACKUP
+            // ==================================
+
+            game = {
+
+                ...defaultState
+
+            };
+
+
+            console.log(
+                "🆕 No previous backup found."
+            );
+
+        }
+
+
+        // ==================================
+        // STEP 5
+        // NEW CANONICAL SAVE TIME
+        // ==================================
+
+        game.savedAt =
+            Date.now();
+
+
+        // ==================================
+        // STEP 6
+        // RECOVERY IS NOW COMPLETE
+        // ==================================
+
+        recoveryReady =
+            true;
+
+        recoveryCompleted =
+            true;
+
+
+        // ==================================
+        // STEP 7
+        // SAVE RECOVERED STATE
+        // ==================================
+
+        saveRecoveredStateToLocal();
+
+        await saveRecoveredStateToCloud();
+
+
+        // ==================================
+        // FINAL RECOVERY LOG
+        // ==================================
+
+        console.log(
+            "🚑 ================================="
+        );
+
+        console.log(
+            "🚑 BSHIB RECOVERY FINISHED"
+        );
+
+        console.log(
+            "🚑 ================================="
+        );
+
+        console.log(
+            "💰 FINAL RECOVERED BALANCE:",
+            game.balance
+        );
+
+        console.log(
+            "⛏️ FINAL MINE RATE:",
+            game.mineRate
+        );
+
+        console.log(
+            "⭐ FINAL LEVEL:",
+            game.level
+        );
+
+
+        return true;
+
+    };
+
+
+// ==========================================
+// FINAL RECOVERY PROTECTION
+// ==========================================
+
+console.log(
+    "🛡️ BSHIB FINAL RECOVERY PATCH INSTALLED"
+);
+
+console.log(
+    "🛡️ Supabase LOAD disabled"
+);
+
+console.log(
+    "🛡️ Supabase SAVE disabled"
+);
+
+console.log(
+    "🛡️ LocalStorage recovery enabled"
+);
+
+console.log(
+    "🛡️ Telegram CloudStorage recovery enabled"
+);
+
+console.log(
+    "🛡️ Zero-state overwrite protection enabled"
+);
