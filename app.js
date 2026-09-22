@@ -1,10 +1,11 @@
 // ==========================================
 // BABY SHIBA INU - MINI APP
-// APP VERSION 2.5
+// APP VERSION 3.0
 // Stable User + CloudStorage + Local Backup
 // Referral Ready for Telegram Serverless
 // VIP Test Purchase System
 // Supabase Telegram Authentication
+// Supabase Persistent Game Save / Load
 // ==========================================
 
 
@@ -23,8 +24,26 @@ const SUPABASE_TELEGRAM_AUTH_URL =
 let tg =
     window.Telegram?.WebApp || null;
 
+
+// ==========================================
+// TELEGRAM CLOUD STORAGE
+// ==========================================
+
 let saveInProgress = false;
 let savePending = false;
+
+
+// ==========================================
+// SUPABASE SAVE SYSTEM
+// ==========================================
+
+let supabaseReady = false;
+let supabaseSaveInProgress = false;
+let supabaseSavePending = false;
+let supabaseSaveTimer = null;
+let lastSupabaseSaveTime = 0;
+
+const SUPABASE_SAVE_INTERVAL = 5000;
 
 
 // ==========================================
@@ -51,7 +70,9 @@ function initTelegram() {
         );
 
         return;
+
     }
+
 
     try {
 
@@ -67,12 +88,15 @@ function initTelegram() {
 
     }
 
+
     telegramUser =
         tg.initDataUnsafe?.user || null;
 
+
     console.log(
-        "📱 Telegram Mini App connected"
+        "📱 Telegram WebApp connected"
     );
+
 
     console.log(
         "Telegram User:",
@@ -93,6 +117,7 @@ function getTelegramUser() {
         const currentUser =
             tg.initDataUnsafe?.user || null;
 
+
         if (currentUser) {
 
             telegramUser =
@@ -101,6 +126,7 @@ function getTelegramUser() {
         }
 
     }
+
 
     if (telegramUser) {
 
@@ -124,6 +150,7 @@ function getTelegramUser() {
         };
 
     }
+
 
     return {
 
@@ -149,13 +176,16 @@ function refreshUser() {
     const currentUser =
         getTelegramUser();
 
+
     user =
         currentUser;
+
 
     console.log(
         "👤 Current User:",
         user
     );
+
 
     return user;
 
@@ -207,7 +237,10 @@ async function authenticateWithSupabase() {
                         JSON.stringify({
 
                             initData:
-                                tg.initData
+                                tg.initData,
+
+                            action:
+                                "auth"
 
                         })
 
@@ -231,9 +264,50 @@ async function authenticateWithSupabase() {
         }
 
 
+        if (!data.success) {
+
+            console.error(
+                "❌ Supabase returned error:",
+                data
+            );
+
+            return null;
+
+        }
+
+
         console.log(
             "✅ Supabase authentication successful:",
             data
+        );
+
+
+        // ======================================
+        // SUPABASE GAME LOAD
+        // ======================================
+
+        if (data.game) {
+
+            loadGameFromSupabase(
+                data.game
+            );
+
+            console.log(
+                "☁️ Game loaded from Supabase:",
+                game
+            );
+
+        }
+
+
+        supabaseReady = true;
+
+
+        saveLocalBackup();
+
+
+        console.log(
+            "✅ Supabase persistent storage ready"
         );
 
 
@@ -247,9 +321,492 @@ async function authenticateWithSupabase() {
             error
         );
 
+
+        supabaseReady = false;
+
+
         return null;
 
     }
+
+}
+
+
+// ==========================================
+// LOAD GAME FROM SUPABASE
+// ==========================================
+
+function loadGameFromSupabase(dbGame) {
+
+    if (!dbGame) {
+
+        return false;
+
+    }
+
+
+    try {
+
+        game = {
+
+            ...defaultState,
+
+            ...game,
+
+            balance:
+                Number(
+                    dbGame.balance ??
+                    game.balance ??
+                    0
+                ),
+
+            totalMined:
+                Number(
+                    dbGame.totalMined ??
+                    game.totalMined ??
+                    0
+                ),
+
+            level:
+                Number(
+                    dbGame.level ??
+                    game.level ??
+                    1
+                ),
+
+            xp:
+                Number(
+                    dbGame.xp ??
+                    game.xp ??
+                    0
+                ),
+
+            tapPower:
+                Number(
+                    dbGame.tapPower ??
+                    game.tapPower ??
+                    1
+                ),
+
+            energy:
+                Number(
+                    dbGame.energy ??
+                    game.energy ??
+                    1250
+                ),
+
+            maxEnergy:
+                Number(
+                    dbGame.maxEnergy ??
+                    game.maxEnergy ??
+                    1250
+                ),
+
+            mineRate:
+                Number(
+                    dbGame.mineRate ??
+                    game.mineRate ??
+                    4
+                ),
+
+            tapLevel:
+                Number(
+                    dbGame.tapLevel ??
+                    game.tapLevel ??
+                    1
+                ),
+
+            energyLevel:
+                Number(
+                    dbGame.energyLevel ??
+                    game.energyLevel ??
+                    1
+                ),
+
+            boostLevel:
+                Number(
+                    dbGame.boostLevel ??
+                    game.boostLevel ??
+                    1
+                ),
+
+            missionProgress:
+                Number(
+                    dbGame.missionProgress ??
+                    game.missionProgress ??
+                    0
+                ),
+
+            missionClaimed:
+                dbGame.missionClaimed ??
+                game.missionClaimed ??
+                false,
+
+            sound:
+                dbGame.sound ??
+                game.sound ??
+                true
+
+        };
+
+
+        // ======================================
+        // SAFETY
+        // ======================================
+
+        if (
+            game.energy < 0
+        ) {
+
+            game.energy = 0;
+
+        }
+
+
+        if (
+            game.energy >
+            getEffectiveMaxEnergy()
+        ) {
+
+            game.energy =
+                getEffectiveMaxEnergy();
+
+        }
+
+
+        if (
+            game.level < 1
+        ) {
+
+            game.level = 1;
+
+        }
+
+
+        if (
+            game.tapLevel < 1
+        ) {
+
+            game.tapLevel = 1;
+
+        }
+
+
+        if (
+            game.energyLevel < 1
+        ) {
+
+            game.energyLevel = 1;
+
+        }
+
+
+        if (
+            game.boostLevel < 1
+        ) {
+
+            game.boostLevel = 1;
+
+        }
+
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Supabase game load error:",
+            error
+        );
+
+        return false;
+
+    }
+
+}
+
+
+// ==========================================
+// SAVE GAME TO SUPABASE
+// ==========================================
+
+async function saveGameToSupabase() {
+
+    if (
+        !supabaseReady ||
+        !tg ||
+        !tg.initData
+    ) {
+
+        return false;
+
+    }
+
+
+    if (supabaseSaveInProgress) {
+
+        supabaseSavePending = true;
+
+        return false;
+
+    }
+
+
+    try {
+
+        supabaseSaveInProgress = true;
+
+        supabaseSavePending = false;
+
+
+        const gameData = {
+
+            balance:
+                Number(
+                    game.balance
+                ),
+
+            totalMined:
+                Number(
+                    game.totalMined
+                ),
+
+            level:
+                Number(
+                    game.level
+                ),
+
+            xp:
+                Number(
+                    game.xp
+                ),
+
+            tapPower:
+                Number(
+                    game.tapPower
+                ),
+
+            energy:
+                Number(
+                    game.energy
+                ),
+
+            maxEnergy:
+                Number(
+                    game.maxEnergy
+                ),
+
+            mineRate:
+                Number(
+                    game.mineRate
+                ),
+
+            tapLevel:
+                Number(
+                    game.tapLevel
+                ),
+
+            energyLevel:
+                Number(
+                    game.energyLevel
+                ),
+
+            boostLevel:
+                Number(
+                    game.boostLevel
+                ),
+
+            missionProgress:
+                Number(
+                    game.missionProgress
+                ),
+
+            missionClaimed:
+                Boolean(
+                    game.missionClaimed
+                ),
+
+            sound:
+                game.sound !== false
+
+        };
+
+
+        console.log(
+            "☁️ Saving game to Supabase..."
+        );
+
+
+        const response =
+            await fetch(
+                SUPABASE_TELEGRAM_AUTH_URL,
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            initData:
+                                tg.initData,
+
+                            action:
+                                "save",
+
+                            game:
+                                gameData
+
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok ||
+            !data.success
+        ) {
+
+            console.error(
+                "❌ Supabase save error:",
+                data
+            );
+
+            return false;
+
+        }
+
+
+        lastSupabaseSaveTime =
+            Date.now();
+
+
+        console.log(
+            "☁️ Supabase game saved successfully"
+        );
+
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Supabase save exception:",
+            error
+        );
+
+        return false;
+
+
+    } finally {
+
+        supabaseSaveInProgress = false;
+
+
+        if (
+            supabaseSavePending
+        ) {
+
+            supabaseSavePending =
+                false;
+
+
+            queueSupabaseSave();
+
+        }
+
+    }
+
+}
+
+
+// ==========================================
+// QUEUE SUPABASE SAVE
+// ==========================================
+
+function queueSupabaseSave(
+    immediate = false
+) {
+
+    if (
+        !supabaseReady
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        supabaseSaveTimer
+    ) {
+
+        return;
+
+    }
+
+
+    const now =
+        Date.now();
+
+
+    const elapsed =
+        now -
+        lastSupabaseSaveTime;
+
+
+    if (
+        immediate
+    ) {
+
+        saveGameToSupabase();
+
+        return;
+
+    }
+
+
+    if (
+        elapsed >=
+        SUPABASE_SAVE_INTERVAL
+    ) {
+
+        saveGameToSupabase();
+
+        return;
+
+    }
+
+
+    const remaining =
+        SUPABASE_SAVE_INTERVAL -
+        elapsed;
+
+
+    supabaseSaveTimer =
+        setTimeout(
+            () => {
+
+                supabaseSaveTimer =
+                    null;
+
+                saveGameToSupabase();
+
+            },
+            remaining
+        );
 
 }
 
@@ -266,15 +823,18 @@ function getUserDisplayName(targetUser) {
 
     }
 
+
     const firstName =
         targetUser.firstName ||
         targetUser.first_name ||
         "";
 
+
     const lastName =
         targetUser.lastName ||
         targetUser.last_name ||
         "";
+
 
     const fullName =
         (
@@ -283,11 +843,13 @@ function getUserDisplayName(targetUser) {
             lastName
         ).trim();
 
+
     if (fullName) {
 
         return fullName;
 
     }
+
 
     if (targetUser.username) {
 
@@ -297,6 +859,7 @@ function getUserDisplayName(targetUser) {
         );
 
     }
+
 
     return "Player";
 
@@ -319,11 +882,11 @@ const defaultState = {
 
     tapPower: 1,
 
-    energy: 1000,
+    energy: 1250,
 
-    maxEnergy: 1000,
+    maxEnergy: 1250,
 
-    mineRate: 1,
+    mineRate: 4,
 
     tapLevel: 1,
 
@@ -496,6 +1059,7 @@ function getVIPData() {
     const level =
         Number(game.vipLevel) || 0;
 
+
     return (
         VIP_LEVELS[level] ||
         VIP_LEVELS[0]
@@ -513,11 +1077,13 @@ function getVIPPrice(level) {
     const vip =
         VIP_LEVELS[level];
 
+
     if (!vip) {
 
         return 0;
 
     }
+
 
     return (
         Number(vip.price) || 0
@@ -535,11 +1101,14 @@ function getEffectiveMineRate() {
     const vip =
         getVIPData();
 
+
     const baseRate =
         Number(game.mineRate) || 0;
 
+
     const bonus =
         vip.miningBonus || 0;
+
 
     return (
 
@@ -564,11 +1133,14 @@ function getEffectiveMaxEnergy() {
     const vip =
         getVIPData();
 
+
     const baseEnergy =
         Number(game.maxEnergy) || 0;
 
+
     const bonus =
         vip.energyBonus || 0;
+
 
     return (
         baseEnergy +
@@ -586,6 +1158,7 @@ function getTodayDate() {
 
     const now =
         new Date();
+
 
     return (
 
@@ -612,6 +1185,7 @@ function buyVIP(level) {
 
     const newLevel =
         Number(level);
+
 
     if (
         !Number.isInteger(
@@ -691,25 +1265,13 @@ function buyVIP(level) {
     }
 
 
-    // --------------------------------------
-    // PAY
-    // --------------------------------------
-
     game.balance -=
         cost;
 
 
-    // --------------------------------------
-    // ACTIVATE VIP
-    // --------------------------------------
-
     game.vipLevel =
         newLevel;
 
-
-    // --------------------------------------
-    // UPDATE ENERGY
-    // --------------------------------------
 
     const effectiveMaxEnergy =
         getEffectiveMaxEnergy();
@@ -726,29 +1288,18 @@ function buyVIP(level) {
     }
 
 
-    // --------------------------------------
-    // RESET DAILY REWARD
-    // --------------------------------------
-
     game.vipRewardClaimed =
         false;
+
 
     game.vipLastRewardDate =
         "";
 
 
-    // --------------------------------------
-    // SAVE
-    // --------------------------------------
-
     saveGame();
 
     updateUI();
 
-
-    // --------------------------------------
-    // HAPTIC
-    // --------------------------------------
 
     if (
         tg &&
@@ -762,10 +1313,6 @@ function buyVIP(level) {
 
     }
 
-
-    // --------------------------------------
-    // MESSAGE
-    // --------------------------------------
 
     showToast(
 
@@ -858,14 +1405,12 @@ function claimVIPDailyReward() {
 // ==========================================
 // SET VIP LEVEL
 // ==========================================
-// Reserved for future real payment/backend
-// integration.
-// ==========================================
 
 function setVIPLevel(level) {
 
     const newLevel =
         Number(level);
+
 
     if (
         !Number.isInteger(
@@ -877,6 +1422,7 @@ function setVIPLevel(level) {
 
     }
 
+
     if (
         newLevel < 0 ||
         newLevel > 5
@@ -885,6 +1431,7 @@ function setVIPLevel(level) {
         return;
 
     }
+
 
     game.vipLevel =
         newLevel;
@@ -947,6 +1494,7 @@ function generateReferralCode() {
 
     saveGame();
 
+
     return game.referralCode;
 
 }
@@ -989,6 +1537,7 @@ function getReferralLink() {
     const code =
         getReferralCode();
 
+
     return (
 
         "https://t.me/" +
@@ -1013,14 +1562,17 @@ function getIncomingReferral() {
 
     }
 
+
     const startParam =
         tg.initDataUnsafe?.start_param;
+
 
     if (!startParam) {
 
         return "";
 
     }
+
 
     return String(startParam);
 
@@ -1035,6 +1587,7 @@ function createReferralUserData() {
 
     const currentUser =
         getTelegramUser();
+
 
     return {
 
@@ -1081,11 +1634,13 @@ function processReferral() {
     const incomingReferral =
         getIncomingReferral();
 
+
     if (!incomingReferral) {
 
         return;
 
     }
+
 
     console.log(
         "🔗 Incoming referral:",
@@ -1204,6 +1759,7 @@ function getGameStorageKey() {
 
     }
 
+
     return "babyShibaGame_GUEST";
 
 }
@@ -1220,18 +1776,22 @@ function saveLocalBackup() {
         const key =
             getGameStorageKey();
 
+
         const data =
             JSON.stringify(game);
+
 
         localStorage.setItem(
             key,
             data
         );
 
+
         console.log(
             "💾 Local backup saved:",
             key
         );
+
 
     } catch (error) {
 
@@ -1256,10 +1816,12 @@ function loadLocalBackup() {
         const key =
             getGameStorageKey();
 
+
         const saved =
             localStorage.getItem(
                 key
             );
+
 
         if (!saved) {
 
@@ -1267,8 +1829,10 @@ function loadLocalBackup() {
 
         }
 
+
         const parsed =
             JSON.parse(saved);
+
 
         game = {
 
@@ -1278,12 +1842,15 @@ function loadLocalBackup() {
 
         };
 
+
         console.log(
             "💾 Local backup loaded:",
             game
         );
 
+
         return true;
+
 
     } catch (error) {
 
@@ -1291,6 +1858,7 @@ function loadLocalBackup() {
             "❌ Local backup load error:",
             error
         );
+
 
         return false;
 
@@ -1305,8 +1873,23 @@ function loadLocalBackup() {
 
 function saveGame() {
 
+    // ======================================
+    // LOCAL
+    // ======================================
+
     saveLocalBackup();
 
+
+    // ======================================
+    // SUPABASE
+    // ======================================
+
+    queueSupabaseSave();
+
+
+    // ======================================
+    // TELEGRAM CLOUD STORAGE
+    // ======================================
 
     if (saveInProgress) {
 
@@ -1331,7 +1914,7 @@ function saveGame() {
         if (!storage) {
 
             console.log(
-                "⚠️ CloudStorage unavailable - local backup used"
+                "⚠️ CloudStorage unavailable - local + Supabase backup used"
             );
 
             return;
@@ -1390,6 +1973,7 @@ function saveGame() {
     } catch (error) {
 
         saveInProgress = false;
+
 
         console.log(
             "❌ Save exception:",
@@ -1909,10 +2493,6 @@ function updateUI() {
         );
 
 
-    // --------------------------------------
-    // BALANCE
-    // --------------------------------------
-
     if (balance) {
 
         balance.textContent =
@@ -1923,10 +2503,6 @@ function updateUI() {
     }
 
 
-    // --------------------------------------
-    // TOTAL MINED
-    // --------------------------------------
-
     if (totalMined) {
 
         totalMined.textContent =
@@ -1936,10 +2512,6 @@ function updateUI() {
 
     }
 
-
-    // --------------------------------------
-    // LEVEL
-    // --------------------------------------
 
     if (level) {
 
@@ -1959,10 +2531,6 @@ function updateUI() {
     }
 
 
-    // --------------------------------------
-    // TAP POWER
-    // --------------------------------------
-
     if (tapPower) {
 
         tapPower.textContent =
@@ -1970,10 +2538,6 @@ function updateUI() {
 
     }
 
-
-    // --------------------------------------
-    // EFFECTIVE ENERGY
-    // --------------------------------------
 
     const effectiveMaxEnergy =
         getEffectiveMaxEnergy();
@@ -1996,10 +2560,6 @@ function updateUI() {
 
     }
 
-
-    // --------------------------------------
-    // EFFECTIVE MINING RATE
-    // --------------------------------------
 
     const effectiveMineRate =
         getEffectiveMineRate();
@@ -2026,10 +2586,6 @@ function updateUI() {
     }
 
 
-    // --------------------------------------
-    // ENERGY BAR
-    // --------------------------------------
-
     if (energyFill) {
 
         const percent =
@@ -2055,10 +2611,6 @@ function updateUI() {
 
     }
 
-
-    // --------------------------------------
-    // XP BAR
-    // --------------------------------------
 
     if (xpFill) {
 
@@ -2089,10 +2641,6 @@ function updateUI() {
 
     }
 
-
-    // --------------------------------------
-    // MISSION
-    // --------------------------------------
 
     if (missionProgress) {
 
@@ -2125,10 +2673,6 @@ function updateUI() {
     }
 
 
-    // --------------------------------------
-    // UPGRADE COSTS
-    // --------------------------------------
-
     if (tapCost) {
 
         tapCost.textContent =
@@ -2158,10 +2702,6 @@ function updateUI() {
 
     }
 
-
-    // --------------------------------------
-    // REFERRAL
-    // --------------------------------------
 
     const refCode =
         document.getElementById(
@@ -2207,10 +2747,6 @@ function updateUI() {
     }
 
 
-    // --------------------------------------
-    // REFERRAL NAME
-    // --------------------------------------
-
     const referralName =
         document.getElementById(
             "referralName"
@@ -2240,7 +2776,7 @@ function updateUI() {
 
 
     // ======================================
-    // VIP UI
+    // VIP
     // ======================================
 
     const vip =
@@ -2349,10 +2885,6 @@ function updateUI() {
     }
 
 
-    // --------------------------------------
-    // VIP DAILY BUTTON
-    // --------------------------------------
-
     const vipDailyButton =
         document.getElementById(
             "claimVipReward"
@@ -2394,10 +2926,6 @@ function updateUI() {
 
     }
 
-
-    // --------------------------------------
-    // VIP CARDS
-    // --------------------------------------
 
     for (
         let levelNumber = 1;
@@ -3548,10 +4076,6 @@ function setupButtons() {
         );
 
 
-    // --------------------------------------
-    // START
-    // --------------------------------------
-
     if (startButton) {
 
         startButton.addEventListener(
@@ -3561,10 +4085,6 @@ function setupButtons() {
 
     }
 
-
-    // --------------------------------------
-    // MINING
-    // --------------------------------------
 
     if (mineButton) {
 
@@ -3576,10 +4096,6 @@ function setupButtons() {
     }
 
 
-    // --------------------------------------
-    // SOUND
-    // --------------------------------------
-
     if (soundButton) {
 
         soundButton.addEventListener(
@@ -3589,10 +4105,6 @@ function setupButtons() {
 
     }
 
-
-    // --------------------------------------
-    // UPGRADES
-    // --------------------------------------
 
     if (upgradeTapButton) {
 
@@ -3624,10 +4136,6 @@ function setupButtons() {
     }
 
 
-    // --------------------------------------
-    // SHOP
-    // --------------------------------------
-
     if (buyEnergyPackButton) {
 
         buyEnergyPackButton.addEventListener(
@@ -3647,10 +4155,6 @@ function setupButtons() {
 
     }
 
-
-    // --------------------------------------
-    // REFERRAL
-    // --------------------------------------
 
     if (copyRefButton) {
 
@@ -3672,10 +4176,6 @@ function setupButtons() {
     }
 
 
-    // --------------------------------------
-    // MISSION
-    // --------------------------------------
-
     if (claimMissionButton) {
 
         claimMissionButton.addEventListener(
@@ -3685,10 +4185,6 @@ function setupButtons() {
 
     }
 
-
-    // --------------------------------------
-    // WALLET
-    // --------------------------------------
 
     if (walletButton) {
 
@@ -3700,10 +4196,6 @@ function setupButtons() {
     }
 
 
-    // --------------------------------------
-    // VIP DAILY
-    // --------------------------------------
-
     if (claimVIPButton) {
 
         claimVIPButton.addEventListener(
@@ -3713,10 +4205,6 @@ function setupButtons() {
 
     }
 
-
-    // --------------------------------------
-    // VIP BUY BUTTONS
-    // --------------------------------------
 
     const vipBuyButtons =
         document.querySelectorAll(
@@ -3735,6 +4223,7 @@ function setupButtons() {
                         Number(
                             this.dataset.vipLevel
                         );
+
 
                     buyVIP(level);
 
@@ -3770,6 +4259,10 @@ async function initApp() {
     );
 
 
+    // ======================================
+    // LOCAL / TELEGRAM BACKUP
+    // ======================================
+
     await loadGameFromTelegram();
 
 
@@ -3777,15 +4270,33 @@ async function initApp() {
 
 
     // ======================================
-    // SUPABASE AUTHENTICATION
+    // SUPABASE AUTH + DATABASE LOAD
     // ======================================
 
-    await authenticateWithSupabase();
+    const supabaseData =
+        await authenticateWithSupabase();
 
 
-    // --------------------------------------
+    if (
+        supabaseData
+    ) {
+
+        console.log(
+            "☁️ Supabase is now the main game database"
+        );
+
+    } else {
+
+        console.log(
+            "⚠️ Supabase unavailable - backup storage remains active"
+        );
+
+    }
+
+
+    // ======================================
     // VIP DATA SAFETY
-    // --------------------------------------
+    // ======================================
 
     if (
         typeof game.vipLevel !==
@@ -3829,18 +4340,18 @@ async function initApp() {
     }
 
 
-    // --------------------------------------
+    // ======================================
     // REFERRAL
-    // --------------------------------------
+    // ======================================
 
     generateReferralCode();
 
     processReferral();
 
 
-    // --------------------------------------
+    // ======================================
     // UI
-    // --------------------------------------
+    // ======================================
 
     updatePlayerInfo();
 
@@ -3853,12 +4364,25 @@ async function initApp() {
     updateUI();
 
 
-    // --------------------------------------
+    // ======================================
+    // FINAL SAVE
+    // ======================================
+
+    if (
+        supabaseReady
+    ) {
+
+        queueSupabaseSave();
+
+    }
+
+
+    // ======================================
     // FINAL LOGS
-    // --------------------------------------
+    // ======================================
 
     console.log(
-        "🐕 Baby Shiba Inu App 2.5 Ready"
+        "🐕 Baby Shiba Inu App 3.0 Ready"
     );
 
 
@@ -3909,6 +4433,18 @@ async function initApp() {
         game.pendingReferral
     );
 
+
+    console.log(
+        "Supabase Ready:",
+        supabaseReady
+    );
+
+
+    console.log(
+        "Current Game:",
+        game
+    );
+
 }
 
 
@@ -3940,10 +4476,37 @@ document.addEventListener(
             "hidden"
         ) {
 
+            // Local + Telegram
             saveGame();
+
+
+            // Immediate Supabase save
+            if (
+                supabaseReady
+            ) {
+
+                queueSupabaseSave(
+                    true
+                );
+
+            }
 
         }
 
     }
 
+);
+
+
+// ==========================================
+// SAVE BEFORE PAGE UNLOAD
+// ==========================================
+
+window.addEventListener(
+    "beforeunload",
+    function() {
+
+        saveGame();
+
+    }
 );
