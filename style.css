@@ -1943,3 +1943,43 @@ ol {
 li::marker {
     content: none !important;
 }
+/* FIX VIP CARDS - FULL HEIGHT */
+.vip-level-container {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    gap: 16px !important;
+}
+
+.vip-level-card {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    flex: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+}
+
+.vip-card-top,
+.vip-benefits,
+.vip-price,
+.vip-buy-btn {
+    position: relative !important;
+}
+
+.vip-benefits {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+.vip-buy-btn {
+    width: 100% !important;
+    min-height: 46px !important;
+    height: auto !important;
+             }
