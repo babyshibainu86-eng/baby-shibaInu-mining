@@ -1,0 +1,1274 @@
+ /* =========================================
+   BABY SHIBA INU
+   MAIN GAME STYLE
+========================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #0b0d12;
+    color: #ffffff;
+    overflow-x: hidden;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================
+   APP
+========================================= */
+
+#app {
+    width: 100%;
+    max-width: 520px;
+    min-height: 100vh;
+    margin: 0 auto;
+    position: relative;
+    background: #0b0d12;
+}
+
+
+/* =========================================
+   INTRO
+========================================= */
+
+.intro-page {
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px 20px;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #242936 0%,
+            #11141b 45%,
+            #0b0d12 100%
+        );
+}
+
+.intro-content {
+    width: 100%;
+    max-width: 420px;
+
+    text-align: center;
+}
+
+.intro-logo {
+    width: 220px;
+    height: 220px;
+
+    margin: 0 auto 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.intro-logo img {
+    width: 210px;
+    height: 210px;
+
+    max-width: 210px;
+    max-height: 210px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+.intro-content h1 {
+    font-size: 30px;
+    line-height: 1.2;
+
+    margin-bottom: 12px;
+}
+
+.intro-text {
+    font-size: 17px;
+    font-weight: 700;
+
+    margin-bottom: 8px;
+
+    opacity: 0.95;
+}
+
+.intro-subtitle {
+    font-size: 14px;
+
+    color: #aeb4c0;
+
+    margin-bottom: 30px;
+}
+
+
+/* =========================================
+   BUTTON
+========================================= */
+
+.primary-btn {
+    width: 100%;
+
+    min-height: 52px;
+
+    padding: 14px 20px;
+
+    border-radius: 14px;
+
+    background: #f5a623;
+    color: #111111;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    box-shadow:
+        0 8px 25px rgba(245, 166, 35, 0.20);
+
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease;
+}
+
+.primary-btn:active {
+    transform: scale(0.97);
+}
+
+.primary-btn:hover {
+    opacity: 0.92;
+}
+
+
+/* =========================================
+   GAME
+========================================= */
+
+.game-app {
+    width: 100%;
+    min-height: 100vh;
+
+    padding-bottom: 80px;
+
+    background: #0b0d12;
+}
+
+.game-page {
+    display: none;
+
+    width: 100%;
+
+    min-height: calc(100vh - 80px);
+
+    padding:
+        18px
+        16px
+        110px;
+}
+
+.game-page.active {
+    display: block;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.top-header {
+    width: 100%;
+
+    margin-bottom: 16px;
+}
+
+.top-header h2 {
+    font-size: 23px;
+    margin-bottom: 5px;
+}
+
+.top-header p {
+    font-size: 13px;
+    color: #9299a6;
+}
+
+
+/* =========================================
+   PLAYER
+========================================= */
+
+.player-card {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px;
+
+    margin-bottom: 14px;
+
+    background: #151922;
+
+    border: 1px solid #242936;
+
+    border-radius: 16px;
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+
+    min-width: 0;
+}
+
+.avatar {
+    width: 46px;
+    height: 46px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 11px;
+
+    border-radius: 50%;
+
+    background: #242936;
+
+    font-size: 25px;
+}
+
+.player-name {
+    font-size: 15px;
+    font-weight: 700;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player-id {
+    margin-top: 4px;
+
+    font-size: 11px;
+
+    color: #7f8795;
+}
+
+.level-box {
+    flex-shrink: 0;
+
+    text-align: center;
+
+    padding-left: 12px;
+}
+
+.level-box span {
+    display: block;
+
+    font-size: 9px;
+
+    color: #7f8795;
+
+    margin-bottom: 3px;
+}
+
+.level-box strong {
+    font-size: 20px;
+}
+
+
+/* =========================================
+   BALANCE
+========================================= */
+
+.balance-card {
+    width: 100%;
+
+    text-align: center;
+
+    padding: 20px 15px;
+
+    margin-bottom: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #191d27,
+            #12151c
+        );
+
+    border: 1px solid #292f3b;
+
+    border-radius: 18px;
+}
+
+.balance-label {
+    font-size: 11px;
+
+    color: #8d95a3;
+
+    margin-bottom: 8px;
+}
+
+.balance-value {
+    font-size: 31px;
+    line-height: 1.1;
+
+    font-weight: 800;
+
+    word-break: break-word;
+}
+
+.balance-symbol {
+    font-size: 12px;
+
+    margin-top: 6px;
+
+    color: #f5a623;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   MINING CARD
+========================================= */
+
+.mining-card {
+    width: 100%;
+
+    padding: 15px;
+
+    background: #151922;
+
+    border: 1px solid #242936;
+
+    border-radius: 18px;
+
+    margin-bottom: 14px;
+}
+
+.mining-title {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: 13px;
+}
+
+.mining-title span {
+    color: #aeb4c0;
+}
+
+.mining-title strong {
+    color: #f5a623;
+}
+
+
+/* =========================================
+   COIN
+========================================= */
+
+.coin-area {
+    width: 100%;
+
+    min-height: 240px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 15px 0;
+}
+
+.shiba-button {
+    width: 190px;
+    height: 190px;
+
+    min-width: 190px;
+    min-height: 190px;
+
+    max-width: 190px;
+    max-height: 190px;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: transparent;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 0 30px rgba(245, 166, 35, 0.18);
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+.shiba-button img {
+    display: block;
+
+    width: 190px;
+    height: 190px;
+
+    min-width: 190px;
+    min-height: 190px;
+
+    max-width: 190px;
+    max-height: 190px;
+
+    object-fit: contain;
+
+    pointer-events: none;
+}
+
+.shiba-button:active {
+    transform: scale(0.94);
+}
+
+
+/* =========================================
+   ENERGY
+========================================= */
+
+.energy-section {
+    width: 100%;
+}
+
+.energy-header {
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+
+    font-size: 12px;
+}
+
+.energy-header span {
+    color: #9ba2af;
+}
+
+.energy-header strong {
+    color: #ffffff;
+}
+
+.energy-bar {
+    width: 100%;
+    height: 9px;
+
+    overflow: hidden;
+
+    background: #292e38;
+
+    border-radius: 20px;
+}
+
+.energy-fill {
+    width: 100%;
+    height: 100%;
+
+    background: #f5a623;
+
+    border-radius: 20px;
+
+    transition: width 0.25s ease;
+}
+
+
+/* =========================================
+   STATS
+========================================= */
+
+.stats-grid {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin-bottom: 14px;
+}
+
+.stat-card {
+    min-width: 0;
+
+    padding: 14px;
+
+    background: #151922;
+
+    border: 1px solid #242936;
+
+    border-radius: 14px;
+}
+
+.stat-card span {
+    display: block;
+
+    font-size: 11px;
+
+    color: #8e96a4;
+
+    margin-bottom: 7px;
+}
+
+.stat-card strong {
+    display: block;
+
+    font-size: 17px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================
+   XP
+========================================= */
+
+.xp-section {
+    width: 100%;
+
+    padding: 14px;
+
+    background: #151922;
+
+    border: 1px solid #242936;
+
+    border-radius: 14px;
+}
+
+.xp-header {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+
+    font-size: 11px;
+
+    color: #a0a7b3;
+}
+
+.xp-bar {
+    width: 100%;
+    height: 8px;
+
+    background: #292e38;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+.xp-fill {
+    width: 0%;
+    height: 100%;
+
+    background: #f5a623;
+
+    border-radius: 20px;
+
+    transition: width 0.25s ease;
+}
+
+
+/* =========================================
+   OTHER PAGE HEADERS
+========================================= */
+
+.page-header {
+    margin-bottom: 18px;
+}
+
+.page-header h2 {
+    font-size: 23px;
+
+    margin-bottom: 6px;
+}
+
+.page-header p {
+    font-size: 13px;
+
+    color: #9299a6;
+}
+
+
+/* =========================================
+   EMPTY CARD
+========================================= */
+
+.empty-card {
+    width: 100%;
+
+    padding: 45px 20px;
+
+    text-align: center;
+
+    background: #151922;
+
+    border: 1px solid #242936;
+
+    border-radius: 18px;
+}
+
+.empty-icon {
+    font-size: 45px;
+
+    margin-bottom: 15px;
+}
+
+.empty-card h3 {
+    font-size: 18px;
+
+    margin-bottom: 8px;
+}
+
+.empty-card p {
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    color: #8e96a4;
+}
+
+
+/* =========================================
+   SHOP
+========================================= */
+
+.shop-card {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 15px;
+
+    margin-bottom: 12px;
+
+    background: #151922;
+
+    border: 1px solid #242936;
+
+    border-radius: 16px;
+}
+
+.shop-icon {
+    width: 46px;
+    height: 46px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #242936;
+
+    border-radius: 12px;
+
+    font-size: 23px;
+}
+
+.shop-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.shop-info h3 {
+    font-size: 15px;
+
+    margin-bottom: 4px;
+}
+
+.shop-info p {
+    font-size: 11px;
+
+    color: #8e96a4;
+
+    margin-bottom: 5px;
+}
+
+.shop-info strong {
+    font-size: 12px;
+
+    color: #f5a623;
+}
+
+.buy-btn {
+    flex-shrink: 0;
+
+    padding: 10px 13px;
+
+    border-radius: 10px;
+
+    background: #f5a623;
+
+    color: #111;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+
+/* =========================================
+   VIP
+========================================= */
+
+.vip-current-card {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px;
+
+    margin-bottom: 12px;
+
+    background: #151922;
+
+    border: 1px solid #242936;
+
+    border-radius: 16px;
+}
+
+.vip-current-card span {
+    display: block;
+
+    font-size: 10px;
+
+    color: #8e96a4;
+
+    margin-bottom: 5px;
+}
+
+.vip-current-card strong {
+    font-size: 20px;
+}
+
+.vip-crown {
+    font-size: 35px;
+}
+
+.vip-stats {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+
+    margin-bottom: 12px;
+}
+
+.vip-stats > div {
+    padding: 14px;
+
+    background: #151922;
+
+    border: 1px solid #242936;
+
+    border-radius: 14px;
+}
+
+.vip-stats span {
+    display: block;
+
+    font-size: 10px;
+
+    color: #8e96a4;
+
+    margin-bottom: 6px;
+}
+
+.vip-stats strong {
+    font-size: 16px;
+}
+
+.vip-list {
+    width: 100%;
+
+    margin-top: 14px;
+}
+
+.vip-card {
+    width: 100%;
+
+    padding: 15px;
+
+    margin-bottom: 10px;
+
+    background: #151922;
+
+    border: 1px solid #242936;
+
+    border-radius: 15px;
+}
+
+.vip-card-top {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 7px;
+}
+
+.vip-card-top strong {
+    font-size: 15px;
+}
+
+.vip-card-top span {
+    font-size: 11px;
+
+    color: #f5a623;
+}
+
+.vip-card p {
+    font-size: 11px;
+
+    color: #9299a6;
+
+    margin-bottom: 12px;
+}
+
+.vip-buy-btn {
+    width: 100%;
+
+    padding: 10px;
+
+    border-radius: 10px;
+
+    background: #242936;
+
+    color: #ffffff;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================
+   FRIENDS
+========================================= */
+
+.referral-card {
+    width: 100%;
+
+    padding: 30px 18px;
+
+    text-align: center;
+
+    background: #151922;
+
+    border: 1px solid #242936;
+
+    border-radius: 18px;
+}
+
+.referral-icon {
+    font-size: 45px;
+
+    margin-bottom: 12px;
+}
+
+.referral-card h3 {
+    font-size: 19px;
+
+    margin-bottom: 7px;
+}
+
+.referral-card > p {
+    font-size: 12px;
+
+    color: #8e96a4;
+
+    line-height: 1.5;
+
+    margin-bottom: 18px;
+}
+
+.referral-code-box {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 5px 6px 5px 13px;
+
+    margin-bottom: 12px;
+
+    background: #0d1016;
+
+    border: 1px solid #292f3b;
+
+    border-radius: 11px;
+}
+
+.referral-code-box span {
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+.referral-code-box button {
+    width: 38px;
+    height: 34px;
+
+    border-radius: 8px;
+
+    background: #242936;
+
+    color: #ffffff;
+}
+
+
+/* =========================================
+   ARENA
+========================================= */
+
+.arena-card {
+    width: 100%;
+
+    padding: 40px 20px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #181d27,
+            #11141b
+        );
+
+    border: 1px solid #242936;
+
+    border-radius: 18px;
+}
+
+.arena-icon {
+    font-size: 55px;
+
+    margin-bottom: 15px;
+}
+
+.arena-card h3 {
+    font-size: 20px;
+
+    margin-bottom: 10px;
+}
+
+.arena-card p {
+    font-size: 12px;
+
+    line-height: 1.6;
+
+    color: #8e96a4;
+
+    margin-bottom: 20px;
+}
+
+.coming-soon {
+    display: inline-block;
+
+    padding: 9px 14px;
+
+    border-radius: 20px;
+
+    background: #242936;
+
+    color: #f5a623;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+
+/* =========================================
+   BOTTOM NAV
+========================================= */
+
+.bottom-nav {
+    position: fixed;
+
+    left: 50%;
+    bottom: 0;
+
+    transform: translateX(-50%);
+
+    width: 100%;
+    max-width: 520px;
+
+    height: 72px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, 1fr);
+
+    background: #11141b;
+
+    border-top: 1px solid #292f3b;
+
+    z-index: 1000;
+}
+
+.nav-item {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+
+    background: transparent;
+
+    color: #707887;
+}
+
+.nav-item span {
+    font-size: 18px;
+
+    line-height: 1;
+}
+
+.nav-item small {
+    font-size: 9px;
+
+    line-height: 1;
+}
+
+.nav-item.active {
+    color: #f5a623;
+}
+
+
+/* =========================================
+   TOAST
+========================================= */
+
+.toast {
+    position: fixed;
+
+    left: 50%;
+    bottom: 90px;
+
+    transform:
+        translateX(-50%)
+        translateY(15px);
+
+    max-width: calc(100% - 40px);
+
+    padding: 11px 16px;
+
+    border-radius: 12px;
+
+    background: #242936;
+
+    color: #ffffff;
+
+    font-size: 12px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    z-index: 2000;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.toast.show {
+    opacity: 1;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+
+/* =========================================
+   EFFECTS
+========================================= */
+
+.effects {
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    z-index: 1500;
+}
+
+.coin-effect {
+    position: fixed;
+
+    left: 50%;
+    top: 45%;
+
+    transform: translate(-50%, 0);
+
+    color: #f5a623;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    animation: coinFloat 0.9s ease-out forwards;
+
+    pointer-events: none;
+}
+
+@keyframes coinFloat {
+
+    0% {
+        opacity: 1;
+        transform:
+            translate(-50%, 0)
+            scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(-50%, -70px)
+            scale(1.1);
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 420px) {
+
+    .game-page {
+        padding-left: 13px;
+        padding-right: 13px;
+    }
+
+    .coin-area {
+        min-height: 225px;
+    }
+
+    .shiba-button {
+        width: 175px;
+        height: 175px;
+
+        min-width: 175px;
+        min-height: 175px;
+
+        max-width: 175px;
+        max-height: 175px;
+    }
+
+    .shiba-button img {
+        width: 175px;
+        height: 175px;
+
+        min-width: 175px;
+        min-height: 175px;
+
+        max-width: 175px;
+        max-height: 175px;
+    }
+
+    .balance-value {
+        font-size: 27px;
+    }
+
+    .nav-item span {
+        font-size: 17px;
+    }
+
+    .nav-item small {
+        font-size: 8px;
+    }
+
+}
+
+
+/* =========================================
+   VERY SMALL SCREENS
+========================================= */
+
+@media (max-width: 340px) {
+
+    .shiba-button {
+        width: 155px;
+        height: 155px;
+
+        min-width: 155px;
+        min-height: 155px;
+
+        max-width: 155px;
+        max-height: 155px;
+    }
+
+    .shiba-button img {
+        width: 155px;
+        height: 155px;
+
+        min-width: 155px;
+        min-height: 155px;
+
+        max-width: 155px;
+        max-height: 155px;
+    }
+
+    .nav-item small {
+        font-size: 7px;
+    }
+
+}
