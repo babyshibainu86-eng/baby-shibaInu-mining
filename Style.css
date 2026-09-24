@@ -1,7 +1,6 @@
 /* ==========================================
    BABY SHIBA INU
-   UI VERSION 2.0
-   CLEAN STYLE SHEET
+   CLEAN UI VERSION
    ========================================== */
 
 * {
@@ -224,9 +223,7 @@ button {
     width: 40px;
     height: 40px;
     border-radius: 12px;
-
     background: rgba(255, 255, 255, 0.06);
-
     font-size: 18px;
 }
 
@@ -732,98 +729,455 @@ button {
 }
 
 /* ==========================================
-   OLD VIP SUPPORT CLASSES
+   VIP
    ========================================== */
 
-.vip-hero {
-    padding: 30px 18px;
-    margin-bottom: 14px;
+#vipPage {
+    height: auto;
+    min-height: calc(100vh - 70px);
 
-    text-align: center;
+    overflow-x: hidden;
+    overflow-y: auto;
 
-    border-radius: 22px;
+    padding-bottom: 150px;
 
-    background:
-        radial-gradient(
-            circle at top,
-            rgba(255, 196, 40, 0.18),
-            rgba(255, 255, 255, 0.025)
-        );
-
-    border: 1px solid rgba(255, 196, 40, 0.18);
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-bottom: 150px;
 }
 
-.vip-crown {
-    font-size: 55px;
-    margin-bottom: 10px;
+/* Current membership */
 
-    filter:
-        drop-shadow(0 0 15px rgba(255, 200, 60, 0.35));
-}
+.vip-current-box {
+    margin: 0 0 18px;
+    padding: 18px;
 
-.vip-hero h2 {
-    color: #ffd65a;
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: 1px;
-}
-
-.vip-hero p {
-    margin-top: 9px;
-
-    color: #99999f;
-    font-size: 11px;
-}
-
-.premium-list {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-    margin-bottom: 15px;
-}
-
-.premium-card {
     display: flex;
     align-items: center;
-    gap: 13px;
+    gap: 14px;
 
-    padding: 14px;
+    border-radius: 20px;
 
-    border-radius: 15px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 193, 7, 0.18),
+            rgba(255, 193, 7, 0.04)
+        );
 
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 193, 7, 0.35);
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.22);
 }
 
-.premium-card > span {
-    width: 40px;
-    height: 40px;
+.vip-current-icon {
+    width: 58px;
+    height: 58px;
+
+    flex-shrink: 0;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    border-radius: 12px;
+    border-radius: 18px;
 
-    background: rgba(255, 193, 45, 0.1);
+    background: rgba(255, 193, 7, 0.14);
 
-    font-size: 20px;
+    border: 1px solid rgba(255, 193, 7, 0.25);
+
+    font-size: 31px;
 }
 
-.premium-card strong {
+.vip-current-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    min-width: 0;
+}
+
+.vip-current-label {
+    color: #ffffff;
+    opacity: 0.55;
+
+    font-size: 10px;
+    letter-spacing: 1.2px;
+}
+
+.vip-current-info strong {
+    font-size: 18px;
+}
+
+#vipLevel {
+    color: #ffc83d;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+/* VIP statistics */
+
+.vip-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+
+    margin-bottom: 14px;
+}
+
+.vip-stat {
+    padding: 12px 6px;
+
+    text-align: center;
+
+    border-radius: 13px;
+
+    background: rgba(255, 255, 255, 0.045);
+
+    border: 1px solid rgba(255, 255, 255, 0.06);
+
+    min-width: 0;
+}
+
+.vip-stat span {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+.vip-stat small {
+    display: block;
+    margin-bottom: 5px;
+
+    color: #85858c;
+    font-size: 9px;
+}
+
+.vip-stat strong {
     display: block;
 
-    font-size: 13px;
-    margin-bottom: 4px;
+    color: #ffc83d;
+    font-size: 12px;
 }
 
-.premium-card small {
+/* VIP reward */
+
+.vip-reward-btn {
+    width: 100%;
+    min-height: 44px;
+
+    margin-bottom: 22px;
+    padding: 11px;
+
+    border-radius: 13px;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.vip-reward-btn:not(:disabled) {
+    background:
+        linear-gradient(
+            135deg,
+            #f6c453,
+            #e7a916
+        );
+
+    color: #171717;
+}
+
+/* VIP section title */
+
+.vip-section-title {
+    margin-bottom: 12px;
+}
+
+.vip-section-title h3 {
+    margin: 0;
+
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.vip-section-title p {
+    margin-top: 4px;
+
     color: #85858c;
+    font-size: 11px;
+}
+
+/* VIP cards container */
+
+.vip-level-container {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 16px;
+
+    padding: 0 0 20px;
+    margin: 0;
+
+    box-sizing: border-box;
+
+    overflow: visible;
+}
+
+/* Every VIP card */
+
+.vip-level-card {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    height: auto;
+
+    display: block;
+    flex: 0 0 auto;
+
+    position: relative;
+
+    padding: 16px;
+    margin: 0;
+
+    box-sizing: border-box;
+
+    overflow: visible;
+
+    border-radius: 19px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.075),
+            rgba(255, 255, 255, 0.025)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+
+    box-shadow:
+        0 7px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* Current VIP */
+
+.vip-level-card.current-vip {
+    border-color:
+        rgba(255, 193, 7, 0.35);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 193, 7, 0.12),
+            rgba(255, 193, 7, 0.035)
+        );
+}
+
+/* VIP 5 */
+
+.vip-level-card.vip-5-card {
+    border-color:
+        rgba(255, 193, 7, 0.4);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 193, 7, 0.14),
+            rgba(255, 193, 7, 0.035)
+        );
+
+    box-shadow:
+        0 10px 30px rgba(255, 193, 7, 0.08);
+}
+
+/* VIP card header */
+
+.vip-card-top {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 12px;
+
+    margin: 0 0 14px;
+
+    box-sizing: border-box;
+}
+
+.vip-card-icon {
+    width: 44px;
+    height: 44px;
+
+    flex: 0 0 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background:
+        rgba(255, 193, 7, 0.12);
+
+    border:
+        1px solid rgba(255, 193, 7, 0.2);
+
+    font-size: 23px;
+}
+
+.vip-card-top > div {
+    min-width: 0;
+    flex: 1 1 auto;
+
+    display: block;
+}
+
+.vip-card-top h3 {
+    margin: 0;
+
+    font-size: 17px;
+
+    white-space: normal;
+}
+
+.vip-card-top span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #85858c;
+
     font-size: 10px;
 }
 
-.premium-btn {
-    margin-top: 2px;
+/* VIP benefits */
+
+.vip-benefits {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 8px;
+
+    margin: 0 0 14px;
+
+    box-sizing: border-box;
+
+    overflow: visible;
+}
+
+.vip-benefits > div {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    min-height: 40px;
+
+    padding: 8px 10px;
+    margin: 0;
+
+    box-sizing: border-box;
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 255, 255, 0.035);
+
+    color: #a5a5ab;
+
+    font-size: 11px;
+}
+
+.vip-benefits strong {
+    color: #ffc83d;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    white-space: nowrap;
+}
+
+/* VIP price */
+
+.vip-price {
+    width: 100%;
+
+    margin: 0 0 10px;
+    padding: 9px;
+
+    text-align: center;
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 193, 7, 0.08);
+
+    color: #ffc83d;
+
+    font-size: 12px;
+    font-weight: 900;
+
+    box-sizing: border-box;
+}
+
+/* VIP button */
+
+.vip-buy-btn {
+    width: 100%;
+    min-width: 0;
+
+    min-height: 42px;
+
+    display: block;
+
+    padding: 10px;
+    margin: 0;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f6c453,
+            #d9950b
+        );
+
+    color: #171717;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    box-sizing: border-box;
+}
+
+.vip-buy-btn:disabled {
+    background:
+        rgba(255, 255, 255, 0.07);
+
+    color: #85858c;
+
+    cursor: default;
+
+    opacity: 0.8;
 }
 
 /* ==========================================
@@ -852,6 +1206,7 @@ button {
 
 .referral-text {
     margin-top: 7px;
+
     color: #898990;
     font-size: 11px;
     line-height: 1.5;
@@ -890,12 +1245,14 @@ button {
     background: rgba(255, 193, 45, 0.13);
 
     color: #ffc83d;
+
     font-size: 9px;
     font-weight: 900;
 }
 
 .invite-btn {
     width: 100%;
+
     margin-top: 10px;
     padding: 13px;
 
@@ -909,6 +1266,7 @@ button {
         );
 
     color: #161109;
+
     font-size: 11px;
     font-weight: 900;
 }
@@ -1076,13 +1434,28 @@ button {
 }
 
 /* ==========================================
-   BOTTOM NAV
+   GAME APP
+   ========================================== */
+
+.game-app {
+    position: relative;
+    min-height: 100vh;
+
+    padding-bottom: 90px;
+
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   BOTTOM NAVIGATION
    ========================================== */
 
 .bottom-nav {
     position: fixed;
+
     left: 50%;
     bottom: 0;
+
     transform: translateX(-50%);
 
     width: 100%;
@@ -1093,9 +1466,11 @@ button {
     grid-template-columns: repeat(6, 1fr);
 
     padding: 6px 4px 8px;
+
     box-sizing: border-box;
 
     background: rgba(8, 8, 10, 0.98);
+
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 
     z-index: 99999;
@@ -1116,28 +1491,37 @@ button {
     gap: 4px;
 
     min-width: 0;
+
     padding: 4px 0;
 
     background: transparent;
+
     color: #777;
 
     font-family: inherit;
+
     cursor: pointer;
 
-    transition: color 0.15s ease, transform 0.15s ease;
+    transition:
+        color 0.15s ease,
+        transform 0.15s ease;
 }
 
 .nav-item span {
     display: block;
+
     font-size: 22px;
     line-height: 1;
 }
 
 .nav-item small {
     display: block;
+
     font-size: 9px;
     line-height: 1;
+
     font-weight: 800;
+
     white-space: nowrap;
 }
 
@@ -1155,6 +1539,7 @@ button {
 
 .toast {
     position: fixed;
+
     left: 50%;
     bottom: 90px;
 
@@ -1240,6 +1625,30 @@ button {
 }
 
 /* ==========================================
+   REMOVE UNWANTED DOTS / LIST MARKERS
+   ========================================== */
+
+body::before,
+body::after,
+.app::before,
+.app::after,
+.game-app::before,
+.game-app::after {
+    content: none !important;
+    display: none !important;
+}
+
+ul,
+ol {
+    list-style: none !important;
+    padding-left: 0 !important;
+}
+
+li::marker {
+    content: none !important;
+}
+
+/* ==========================================
    ANIMATIONS
    ========================================== */
 
@@ -1303,655 +1712,27 @@ button {
     .nav-item small {
         font-size: 7px;
     }
-}
 
-/* ==========================================
-   GAME APP LAYOUT
-   ========================================== */
+    /* VIP mobile */
 
-.game-app {
-    position: relative;
-    min-height: 100vh;
-    padding-bottom: 90px;
-    box-sizing: border-box;
-}
-
-/* ==========================================
-   BABY SHIBA VIP
-   ========================================== */
-
-/* VIP page */
-
-#vipPage {
-    display: none !important;
-
-    width: 100%;
-
-    height: auto !important;
-    min-height: calc(100vh - 70px) !important;
-
-    max-height: none !important;
-
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-
-    padding: 18px 16px 220px !important;
-
-    box-sizing: border-box !important;
-
-    -webkit-overflow-scrolling: touch !important;
-
-    scroll-padding-bottom: 180px !important;
-}
-
-#vipPage.active {
-    display: block !important;
-}
-
-/* ==========================================
-   VIP PAGE HEADER
-   ========================================== */
-
-.vip-page-header {
-    text-align: center;
-    margin-bottom: 18px;
-}
-
-.vip-header-crown {
-    font-size: 42px;
-    margin-bottom: 5px;
-}
-
-.vip-page-header h2 {
-    margin: 0;
-    font-size: 25px;
-    font-weight: 800;
-}
-
-.vip-page-header p {
-    margin: 6px 0 0;
-    opacity: 0.65;
-    font-size: 13px;
-}
-
-/* ==========================================
-   CURRENT VIP
-   ========================================== */
-
-.vip-current-box {
-    width: 100%;
-
-    margin: 0 0 18px;
-    padding: 18px;
-
-    display: flex;
-    align-items: center;
-    gap: 14px;
-
-    border-radius: 20px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255, 193, 7, 0.18),
-            rgba(255, 193, 7, 0.04)
-        );
-
-    border: 1px solid rgba(255, 193, 7, 0.35);
-
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.22);
-}
-
-.vip-current-icon {
-    width: 58px;
-    height: 58px;
-
-    flex: 0 0 58px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 18px;
-
-    background: rgba(255, 193, 7, 0.14);
-
-    border: 1px solid rgba(255, 193, 7, 0.25);
-
-    font-size: 31px;
-}
-
-.vip-current-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
-    min-width: 0;
-}
-
-.vip-current-label {
-    color: #ffffff;
-    opacity: 0.55;
-
-    font-size: 10px;
-    letter-spacing: 1.2px;
-}
-
-.vip-current-info strong {
-    font-size: 18px;
-}
-
-#vipLevel {
-    color: #ffc83d;
-    font-size: 11px;
-    font-weight: 800;
-}
-
-/* ==========================================
-   VIP STATS
-   ========================================== */
-
-.vip-stats {
-    width: 100%;
-
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 8px;
-
-    margin-bottom: 14px;
-}
-
-.vip-stat {
-    min-width: 0;
-
-    padding: 12px 6px;
-
-    text-align: center;
-
-    border-radius: 13px;
-
-    background: rgba(255, 255, 255, 0.045);
-
-    border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.vip-stat span {
-    display: block;
-
-    margin-bottom: 5px;
-
-    font-size: 15px;
-}
-
-.vip-stat small {
-    display: block;
-
-    margin-bottom: 5px;
-
-    color: #85858c;
-
-    font-size: 9px;
-}
-
-.vip-stat strong {
-    display: block;
-
-    color: #ffc83d;
-
-    font-size: 12px;
-}
-
-/* ==========================================
-   VIP REWARD
-   ========================================== */
-
-.vip-reward-btn {
-    width: 100%;
-
-    min-height: 44px;
-
-    margin-bottom: 22px;
-
-    padding: 11px;
-
-    border-radius: 13px;
-
-    background: rgba(255, 255, 255, 0.07);
-
-    color: #ffffff;
-
-    font-size: 12px;
-    font-weight: 800;
-}
-
-.vip-reward-btn:not(:disabled) {
-    background:
-        linear-gradient(
-            135deg,
-            #f6c453,
-            #e7a916
-        );
-
-    color: #171717;
-}
-
-/* ==========================================
-   VIP SECTION TITLE
-   ========================================== */
-
-.vip-section-title {
-    width: 100%;
-    margin-bottom: 12px;
-}
-
-.vip-section-title h3 {
-    margin: 0;
-
-    font-size: 18px;
-    font-weight: 900;
-}
-
-.vip-section-title p {
-    margin-top: 4px;
-
-    color: #85858c;
-
-    font-size: 11px;
-}
-
-/* ==========================================
-   VIP LEVEL CONTAINER
-   ========================================== */
-
-#vipPage .vip-level-container {
-    width: 100% !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-
-    gap: 18px !important;
-
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-
-    padding: 0 0 80px !important;
-    margin: 0 !important;
-
-    overflow: visible !important;
-
-    box-sizing: border-box !important;
-}
-
-/* ==========================================
-   VIP LEVEL CARD
-   ========================================== */
-
-#vipPage .vip-level-card {
-    position: relative !important;
-
-    display: block !important;
-
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-
-    flex: 0 0 auto !important;
-    flex-shrink: 0 !important;
-
-    overflow: visible !important;
-
-    padding: 16px !important;
-    margin: 0 !important;
-
-    box-sizing: border-box !important;
-
-    transform: none !important;
-
-    writing-mode: horizontal-tb !important;
-
-    border-radius: 19px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255, 255, 255, 0.075),
-            rgba(255, 255, 255, 0.025)
-        );
-
-    border: 1px solid rgba(255, 255, 255, 0.09);
-
-    box-shadow:
-        0 7px 20px rgba(0, 0, 0, 0.18);
-}
-
-/* Current VIP */
-
-#vipPage .vip-level-card.current-vip {
-    border-color:
-        rgba(255, 193, 7, 0.35);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255, 193, 7, 0.12),
-            rgba(255, 193, 7, 0.035)
-        );
-}
-
-/* VIP 5 */
-
-#vipPage .vip-level-card.vip-5-card {
-    border-color:
-        rgba(255, 193, 7, 0.4);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255, 193, 7, 0.14),
-            rgba(255, 193, 7, 0.035)
-        );
-
-    box-shadow:
-        0 10px 30px rgba(255, 193, 7, 0.08);
-}
-
-/* ==========================================
-   VIP CARD TOP
-   ========================================== */
-
-#vipPage .vip-card-top {
-    width: 100% !important;
-    min-width: 0 !important;
-
-    display: flex !important;
-    flex-direction: row !important;
-
-    align-items: center !important;
-    justify-content: flex-start !important;
-
-    gap: 12px !important;
-
-    height: auto !important;
-    min-height: 55px !important;
-
-    margin: 0 0 14px !important;
-    padding: 0 !important;
-
-    box-sizing: border-box !important;
-}
-
-#vipPage .vip-card-icon {
-    width: 44px !important;
-    height: 44px !important;
-
-    min-width: 44px !important;
-    max-width: 44px !important;
-
-    flex: 0 0 44px !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    border-radius: 14px;
-
-    background:
-        rgba(255, 193, 7, 0.12);
-
-    border:
-        1px solid rgba(255, 193, 7, 0.2);
-
-    font-size: 23px;
-}
-
-#vipPage .vip-card-top > div {
-    min-width: 0 !important;
-
-    width: auto !important;
-    height: auto !important;
-
-    flex: 1 1 auto !important;
-
-    display: block !important;
-}
-
-#vipPage .vip-card-top h3 {
-    margin: 0;
-
-    font-size: 17px;
-
-    white-space: normal;
-}
-
-#vipPage .vip-card-top span {
-    display: block;
-
-    margin-top: 3px;
-
-    color: #85858c;
-
-    font-size: 10px;
-}
-
-/* ==========================================
-   VIP BENEFITS
-   ========================================== */
-
-#vipPage .vip-benefits {
-    width: 100% !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-
-    gap: 8px !important;
-
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-
-    margin: 0 0 14px !important;
-    padding: 0 !important;
-
-    overflow: visible !important;
-
-    box-sizing: border-box !important;
-}
-
-#vipPage .vip-benefits > div {
-    width: 100% !important;
-    min-width: 0 !important;
-
-    display: flex !important;
-    flex-direction: row !important;
-
-    align-items: center !important;
-    justify-content: space-between !important;
-
-    gap: 10px !important;
-
-    height: auto !important;
-    min-height: 44px !important;
-    max-height: none !important;
-
-    flex: 0 0 auto !important;
-
-    padding: 8px 10px !important;
-    margin: 0 !important;
-
-    box-sizing: border-box !important;
-
-    border-radius: 10px;
-
-    background:
-        rgba(255, 255, 255, 0.035);
-
-    color: #a5a5ab;
-
-    font-size: 11px;
-}
-
-#vipPage .vip-benefits strong {
-    color: #ffc83d;
-
-    font-size: 11px;
-
-    font-weight: 900;
-
-    white-space: nowrap;
-}
-
-/* ==========================================
-   VIP PRICE
-   ========================================== */
-
-#vipPage .vip-price {
-    display: block !important;
-
-    width: 100% !important;
-
-    height: auto !important;
-    min-height: 0 !important;
-
-    margin: 0 0 10px !important;
-    padding: 9px !important;
-
-    text-align: center;
-
-    border-radius: 10px;
-
-    background:
-        rgba(255, 193, 7, 0.08);
-
-    color: #ffc83d;
-
-    font-size: 12px;
-
-    font-weight: 900;
-
-    box-sizing: border-box !important;
-}
-
-/* ==========================================
-   VIP BUTTON
-   ========================================== */
-
-#vipPage .vip-buy-btn {
-    display: block !important;
-
-    width: 100% !important;
-    min-width: 0 !important;
-
-    height: auto !important;
-    min-height: 46px !important;
-
-    margin: 0 !important;
-    padding: 10px !important;
-
-    box-sizing: border-box !important;
-
-    border-radius: 11px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #f6c453,
-            #d9950b
-        );
-
-    color: #171717;
-
-    font-size: 11px;
-
-    font-weight: 900;
-}
-
-#vipPage .vip-buy-btn:disabled {
-    background:
-        rgba(255, 255, 255, 0.07);
-
-    color: #85858c;
-
-    cursor: default;
-
-    opacity: 0.8;
-}
-
-/* ==========================================
-   REMOVE UNWANTED DOTS
-   ========================================== */
-
-body::before,
-body::after,
-.app::before,
-.app::after,
-.game-app::before,
-.game-app::after {
-    content: none !important;
-    display: none !important;
-}
-
-ul,
-ol {
-    list-style: none !important;
-    padding-left: 0 !important;
-}
-
-li::marker {
-    content: none !important;
-}
-
-/* ==========================================
-   MOBILE VIP
-   ========================================== */
-
-@media (max-width: 380px) {
-
-    #vipPage {
-        padding-left: 14px !important;
-        padding-right: 14px !important;
-        padding-bottom: 220px !important;
+    .vip-level-card {
+        padding: 14px;
     }
 
-    #vipPage .vip-level-container {
-        gap: 16px !important;
-        padding-bottom: 80px !important;
-    }
+    .vip-card-icon {
+        width: 40px;
+        height: 40px;
 
-    #vipPage .vip-level-card {
-        padding: 14px !important;
-    }
-
-    #vipPage .vip-card-icon {
-        width: 40px !important;
-        height: 40px !important;
-
-        min-width: 40px !important;
-        max-width: 40px !important;
-
-        flex-basis: 40px !important;
+        flex-basis: 40px;
 
         font-size: 20px;
     }
 
-    #vipPage .vip-card-top h3 {
+    .vip-card-top h3 {
         font-size: 15px;
     }
 
-    #vipPage .vip-benefits > div {
-        min-height: 42px !important;
-        padding: 7px 8px !important;
+    .vip-benefits > div {
+        padding: 7px 8px;
     }
-  }
+   }
