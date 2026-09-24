@@ -1,0 +1,1001 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top, #302000 0%, #111111 45%, #050505 100%);
+    color: #ffffff;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: 0;
+}
+
+button:focus {
+    outline: none;
+}
+
+.app {
+    width: 100%;
+    max-width: 520px;
+    min-height: 100vh;
+    margin: 0 auto;
+    position: relative;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================
+   INTRO
+========================= */
+
+.page {
+    width: 100%;
+}
+
+.intro-page {
+    min-height: 100vh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.intro-page.active {
+    display: flex;
+}
+
+.intro-content {
+    width: 100%;
+    max-width: 420px;
+}
+
+.intro-logo {
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.intro-logo img {
+    width: 210px;
+    height: 210px;
+    max-width: 210px;
+    max-height: 210px;
+    object-fit: contain;
+    display: block;
+}
+
+.intro-content h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #ffd34d;
+}
+
+.intro-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.intro-subtitle {
+    color: #a9a9a9;
+    font-size: 14px;
+    margin-bottom: 28px;
+}
+
+.primary-btn {
+    width: 100%;
+    min-height: 52px;
+    border-radius: 15px;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #ffd34d, #ff9f00);
+    color: #171717;
+    font-size: 16px;
+    font-weight: 800;
+    box-shadow: 0 8px 25px rgba(255, 180, 0, 0.25);
+}
+
+.primary-btn:active {
+    transform: scale(0.98);
+}
+
+
+/* =========================
+   GAME PAGES
+========================= */
+
+.game-app {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.game-page {
+    display: none;
+    width: 100%;
+    min-height: calc(100vh - 72px);
+    padding: 18px 16px 110px;
+}
+
+.game-page.active {
+    display: block;
+}
+
+
+/* =========================
+   HEADERS
+========================= */
+
+.top-header,
+.page-header {
+    margin-bottom: 18px;
+}
+
+.top-header h2,
+.page-header h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.top-header p,
+.page-header p {
+    color: #999999;
+    font-size: 13px;
+}
+
+
+/* =========================
+   PLAYER
+========================= */
+
+.player-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    flex: 0 0 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #272727;
+    font-size: 25px;
+}
+
+#playerName {
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 180px;
+}
+
+.player-id {
+    color: #777777;
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+.level-box {
+    text-align: center;
+    min-width: 55px;
+}
+
+.level-box span {
+    display: block;
+    color: #777777;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.level-box strong {
+    display: block;
+    color: #ffd34d;
+    font-size: 22px;
+    margin-top: 2px;
+}
+
+
+/* =========================
+   BALANCE
+========================= */
+
+.balance-card {
+    text-align: center;
+    padding: 22px 16px;
+    margin-bottom: 15px;
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,211,77,0.13),
+            rgba(255,159,0,0.05)
+        );
+    border: 1px solid rgba(255,211,77,0.18);
+}
+
+.balance-label {
+    color: #8e8e8e;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.balance-value {
+    color: #ffd34d;
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1.1;
+    word-break: break-word;
+}
+
+.balance-symbol {
+    margin-top: 7px;
+    color: #999999;
+    font-size: 12px;
+}
+
+
+/* =========================
+   MINING
+========================= */
+
+.mining-card {
+    padding: 17px;
+    margin-bottom: 15px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.055);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.mining-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 13px;
+    color: #aaaaaa;
+}
+
+.mining-title strong {
+    color: #ffd34d;
+    font-size: 13px;
+}
+
+.coin-area {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 245px;
+}
+
+.shiba-button {
+    width: 210px;
+    height: 210px;
+    padding: 0;
+    border-radius: 50%;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.08s ease;
+}
+
+.shiba-button:active {
+    transform: scale(0.94);
+}
+
+.shiba-button img {
+    width: 210px;
+    height: 210px;
+    max-width: 210px;
+    max-height: 210px;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+
+/* =========================
+   ENERGY
+========================= */
+
+.energy-section {
+    margin-top: 8px;
+}
+
+.energy-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #aaaaaa;
+}
+
+.energy-header strong {
+    color: #ffffff;
+}
+
+.energy-bar {
+    width: 100%;
+    height: 10px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #242424;
+}
+
+.energy-fill {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ffd34d, #ff9f00);
+    transition: width 0.2s ease;
+}
+
+
+/* =========================
+   STATS
+========================= */
+
+.stats-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.stat-card {
+    padding: 15px 12px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.stat-card span {
+    display: block;
+    color: #858585;
+    font-size: 11px;
+    margin-bottom: 7px;
+}
+
+.stat-card strong {
+    display: block;
+    color: #ffffff;
+    font-size: 18px;
+    word-break: break-word;
+}
+
+
+/* =========================
+   XP
+========================= */
+
+.xp-section {
+    padding: 14px;
+    margin-bottom: 15px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+}
+
+.xp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #9a9a9a;
+    font-size: 11px;
+    margin-bottom: 8px;
+}
+
+.xp-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #242424;
+}
+
+.xp-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #8d5cff, #c28cff);
+    transition: width 0.2s ease;
+}
+
+
+/* =========================
+   EMPTY CARD
+========================= */
+
+.empty-card {
+    text-align: center;
+    padding: 45px 20px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.empty-icon {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.empty-card h3 {
+    font-size: 19px;
+    margin-bottom: 8px;
+}
+
+.empty-card p {
+    color: #858585;
+    font-size: 13px;
+}
+
+
+/* =========================
+   SHOP
+========================= */
+
+.shop-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.shop-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border-radius: 14px;
+    background: rgba(255,211,77,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+}
+
+.shop-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.shop-info h3 {
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.shop-info p {
+    color: #858585;
+    font-size: 11px;
+    margin-bottom: 6px;
+}
+
+.shop-info strong {
+    color: #ffd34d;
+    font-size: 12px;
+}
+
+.buy-btn {
+    flex: 0 0 auto;
+    min-width: 65px;
+    padding: 10px 12px;
+    border-radius: 11px;
+    background: #ffd34d;
+    color: #171717;
+    font-weight: 800;
+    font-size: 11px;
+}
+
+
+/* =========================
+   VIP
+========================= */
+
+.vip-current-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    margin-bottom: 12px;
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,211,77,0.15),
+            rgba(255,159,0,0.05)
+        );
+    border: 1px solid rgba(255,211,77,0.2);
+}
+
+.vip-current-card span {
+    display: block;
+    color: #8c8c8c;
+    font-size: 10px;
+    margin-bottom: 6px;
+}
+
+.vip-current-card strong {
+    color: #ffd34d;
+    font-size: 23px;
+}
+
+.vip-crown {
+    font-size: 38px;
+}
+
+.vip-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.vip-stats > div {
+    padding: 14px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.vip-stats span {
+    display: block;
+    color: #858585;
+    font-size: 11px;
+    margin-bottom: 6px;
+}
+
+.vip-stats strong {
+    color: #ffd34d;
+    font-size: 17px;
+}
+
+.vip-reward-btn {
+    margin-bottom: 14px;
+}
+
+.vip-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.vip-card {
+    width: 100%;
+    padding: 15px;
+    border-radius: 17px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.vip-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.vip-card-top strong {
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.vip-card-top span {
+    color: #ffd34d;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.vip-card p {
+    color: #888888;
+    font-size: 11px;
+    margin-bottom: 12px;
+}
+
+.vip-buy-btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 11px;
+    background: #272727;
+    color: #ffd34d;
+    font-size: 11px;
+    font-weight: 800;
+    border: 1px solid rgba(255,211,77,0.18);
+}
+
+
+/* =========================
+   FRIENDS
+========================= */
+
+.referral-card {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.referral-icon {
+    font-size: 45px;
+    margin-bottom: 12px;
+}
+
+.referral-card h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.referral-card p {
+    color: #888888;
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
+.referral-code-box {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 7px 5px 13px;
+    margin-bottom: 14px;
+    border-radius: 12px;
+    background: #191919;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.referral-code-box span {
+    color: #ffd34d;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.referral-code-box button {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background: #292929;
+    color: #ffffff;
+}
+
+
+/* =========================
+   ARENA
+========================= */
+
+.arena-card {
+    text-align: center;
+    padding: 42px 20px;
+    border-radius: 22px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,211,77,0.08),
+            rgba(255,255,255,0.035)
+        );
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.arena-icon {
+    font-size: 55px;
+    margin-bottom: 14px;
+}
+
+.arena-card h3 {
+    font-size: 22px;
+    margin-bottom: 9px;
+}
+
+.arena-card p {
+    color: #858585;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.coming-soon {
+    display: inline-block;
+    padding: 9px 15px;
+    border-radius: 20px;
+    background: rgba(255,211,77,0.1);
+    color: #ffd34d;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+
+/* =========================
+   UPGRADES
+========================= */
+
+.upgrade-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.upgrade-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(255,211,77,0.1);
+    font-size: 24px;
+}
+
+.upgrade-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.upgrade-info h3 {
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.upgrade-info p {
+    color: #858585;
+    font-size: 10px;
+    margin-bottom: 5px;
+}
+
+.upgrade-info strong {
+    color: #ffd34d;
+    font-size: 11px;
+}
+
+.upgrade-btn {
+    flex: 0 0 auto;
+    padding: 10px 12px;
+    border-radius: 11px;
+    background: #ffd34d;
+    color: #171717;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottom-nav {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 520px;
+    height: 72px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    align-items: stretch;
+    background: rgba(12,12,12,0.97);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    z-index: 99999;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nav-item {
+    min-width: 0;
+    height: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: transparent;
+    color: #6e6e6e;
+}
+
+.nav-item span {
+    display: block;
+    font-size: 20px;
+    line-height: 20px;
+}
+
+.nav-item small {
+    display: block;
+    font-size: 9px;
+    line-height: 12px;
+    color: inherit;
+}
+
+.nav-item.active {
+    color: #ffd34d;
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 90px;
+    transform: translateX(-50%) translateY(20px);
+    z-index: 100000;
+    max-width: calc(100% - 35px);
+    padding: 11px 17px;
+    border-radius: 13px;
+    background: rgba(30,30,30,0.96);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #ffffff;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+
+/* =========================
+   TAP EFFECT
+========================= */
+
+.effects {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 999999;
+}
+
+.coin-effect {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, 0);
+    color: #ffd34d;
+    font-size: 19px;
+    font-weight: 900;
+    text-shadow:
+        0 2px 5px rgba(0,0,0,0.7);
+    pointer-events: none;
+    white-space: nowrap;
+    animation: coinUp 0.8s ease-out forwards;
+}
+
+@keyframes coinUp {
+
+    0% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -85px) scale(1.2);
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 420px) {
+
+    .game-page {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .intro-logo {
+        width: 190px;
+        height: 190px;
+    }
+
+    .intro-logo img {
+        width: 180px;
+        height: 180px;
+    }
+
+    .intro-content h1 {
+        font-size: 28px;
+    }
+
+    .shiba-button {
+        width: 185px;
+        height: 185px;
+    }
+
+    .shiba-button img {
+        width: 185px;
+        height: 185px;
+    }
+
+    .coin-area {
+        min-height: 220px;
+    }
+
+    .balance-value {
+        font-size: 30px;
+    }
+
+    .nav-item span {
+        font-size: 18px;
+    }
+
+    .nav-item small {
+        font-size: 8px;
+    }
+  }
