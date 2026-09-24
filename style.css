@@ -2218,3 +2218,25 @@ li::marker {
 #vipPage {
     scroll-padding-bottom: 150px !important;
    }
+/* ==========================================
+   VIP TAB DISPLAY FIX
+   ========================================== */
+
+#vipPage {
+    display: none !important;
+}
+
+#vipPage.active {
+    display: block !important;
+
+    height: auto !important;
+    min-height: calc(100vh - 70px) !important;
+    max-height: none !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    padding-bottom: 150px !important;
+
+    box-sizing: border-box !important;
+   }
