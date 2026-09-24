@@ -2083,3 +2083,138 @@ li::marker {
 #vipPage {
     scroll-padding-bottom: 180px !important;
        }
+/* ==========================================
+   VIP FINAL FIX - SCROLL + FULL CARDS
+   ========================================== */
+
+#vipPage {
+    display: block !important;
+
+    height: calc(100vh - 70px) !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    padding: 18px 16px 140px !important;
+
+    box-sizing: border-box !important;
+
+    -webkit-overflow-scrolling: touch !important;
+}
+
+/* VIP cards container */
+#vipPage .vip-level-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    gap: 16px !important;
+
+    padding: 0 0 30px !important;
+    margin: 0 !important;
+
+    overflow: visible !important;
+}
+
+/* EVERY VIP CARD */
+#vipPage .vip-level-card {
+    display: block !important;
+
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    flex: 0 0 auto !important;
+
+    overflow: visible !important;
+
+    box-sizing: border-box !important;
+
+    padding: 16px !important;
+    margin: 0 !important;
+}
+
+/* Card header */
+#vipPage .vip-card-top {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+
+    width: 100% !important;
+    height: auto !important;
+    min-height: 55px !important;
+
+    margin-bottom: 14px !important;
+}
+
+/* Benefits */
+#vipPage .vip-benefits {
+    display: flex !important;
+    flex-direction: column !important;
+
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    gap: 8px !important;
+
+    overflow: visible !important;
+}
+
+/* Benefit rows */
+#vipPage .vip-benefits > div {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    width: 100% !important;
+    height: auto !important;
+    min-height: 44px !important;
+
+    box-sizing: border-box !important;
+}
+
+/* Price */
+#vipPage .vip-price {
+    display: block !important;
+
+    width: 100% !important;
+    height: auto !important;
+
+    margin-bottom: 10px !important;
+
+    box-sizing: border-box !important;
+}
+
+/* Buy button */
+#vipPage .vip-buy-btn {
+    display: block !important;
+
+    width: 100% !important;
+    height: auto !important;
+    min-height: 46px !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+}
+
+/* Keep bottom navigation above everything */
+.bottom-nav {
+    z-index: 99999 !important;
+}
+
+/* Extra safe space at the bottom of VIP scroll */
+#vipPage {
+    scroll-padding-bottom: 150px !important;
+   }
