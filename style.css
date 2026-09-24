@@ -1983,3 +1983,103 @@ li::marker {
     min-height: 46px !important;
     height: auto !important;
              }
+/* =========================================
+   BABY SHIBA VIP - FINAL DISPLAY FIX
+   ========================================= */
+
+/* VIP page must be allowed to scroll */
+#vipPage {
+    height: auto !important;
+    min-height: calc(100vh - 80px) !important;
+    max-height: none !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    padding-bottom: 180px !important;
+    box-sizing: border-box !important;
+}
+
+/* VIP membership list */
+#vipPage .vip-level-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    gap: 18px !important;
+    padding-bottom: 20px !important;
+}
+
+/* Every VIP card must be completely visible */
+#vipPage .vip-level-card {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+}
+
+/* Card header */
+#vipPage .vip-card-top {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: 85px !important;
+    box-sizing: border-box !important;
+}
+
+/* Benefits area */
+#vipPage .vip-benefits {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+}
+
+/* Each benefit row */
+#vipPage .vip-benefits > div {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    height: auto !important;
+    box-sizing: border-box !important;
+}
+
+/* Price */
+#vipPage .vip-price {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    box-sizing: border-box !important;
+}
+
+/* VIP button */
+#vipPage .vip-buy-btn {
+    display: block !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    height: auto !important;
+    box-sizing: border-box !important;
+    margin-bottom: 4px !important;
+}
+
+/* Make sure the fixed bottom navigation doesn't cover VIP cards */
+.bottom-nav {
+    z-index: 1000 !important;
+}
+
+#vipPage {
+    scroll-padding-bottom: 180px !important;
+       }
