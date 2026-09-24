@@ -1282,75 +1282,37 @@ function tapMine(x, y){
        VIP DAILY REWARD
     ===================================================== */
 
-    const claimVipReward =
-        document.getElementById(
-            "claimVipReward"
-        );
+    const claimVipReward=document.getElementById("claimVipReward");
 
+if(claimVipReward){
+    claimVipReward.disabled=false;
 
-    if (claimVipReward) {
+    claimVipReward.addEventListener("click",function(){
 
-        claimVipReward.addEventListener(
-            "click",
-            function () {
+        const rewards={
+            1:500,
+            2:1000,
+            3:2500,
+            4:5000,
+            5:10000
+        };
 
-                if (
-                    state.vipLevel <= 0
-                ) {
+        if(state.vipLevel<=0){
+            showToast("👑 Activate VIP to claim reward");
+            return;
+        }
 
-                    showToast(
-                        "🔒 VIP Reward Locked"
-                    );
+        const reward=rewards[state.vipLevel]||0;
 
-                    return;
-                }
+        state.balance+=reward;
+        state.totalMined+=reward;
 
+        showToast("🎁 +"+formatNumber(reward)+" BSHIB");
 
-                const rewards = {
-
-                    1: 500,
-
-                    2: 1000,
-
-                    3: 2500,
-
-                    4: 5000,
-
-                    5: 10000
-                };
-
-
-                const reward =
-                    rewards[
-                        state.vipLevel
-                    ] || 0;
-
-
-                state.balance +=
-                    reward;
-
-
-                state.totalMined +=
-                    reward;
-
-
-                showToast(
-                    "🎁 +" +
-                    formatNumber(
-                        reward
-                    ) +
-                    " BSHIB"
-                );
-
-
-                updateUI();
-
-                saveGame();
-
-            }
-        );
-    }
-
+        updateUI();
+        saveGame();
+    });
+}
 
     /* =====================================================
        FRIENDS — COPY
