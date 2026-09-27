@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Baby Shiba Player Test</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 30px 20px;
+            background: #0b0d12;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .box {
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 25px;
+            background: #151922;
+            border-radius: 20px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        #status {
+            margin: 20px 0;
+            padding: 15px;
+            background: #202632;
+            border-radius: 12px;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            border: 0;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .save {
+            background: #ffb300;
+        }
+
+        .clear {
+            background: #333a48;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h1>🐕 Baby Shiba</h1>
+
+    <h2>Player System Test</h2>
+
+    <div id="status">
+        Loading...
+    </div>
+
+    <button class="save" onclick="testSave()">
+        Test Save
+    </button>
+
+    <button class="clear" onclick="testClear()">
+        Clear Test Data
+    </button>
+
+</div>
+
+<script src="player-system.js"></script>
+<script src="storage-system.js"></script>
+
+<script>
+
+let player;
+
+function showPlayer() {
+
+    document.getElementById("status").innerHTML = `
+        <strong>Player ID:</strong> ${player.telegramId || "Test Player"}<br>
+        <strong>Name:</strong> ${player.firstName || "Baby Shiba Player"}<br>
+        <strong>Balance:</strong> ${player.balance}<br>
+        <strong>Total Mined:</strong> ${player.totalMined}<br>
+        <strong>Level:</strong> ${player.level}<br>
+        <strong>XP:</strong> ${player.xp}<br>
+        <strong>Tap Power:</strong> ${player.tapPower}<br>
+        <strong>Mining Rate:</strong> ${player.miningRate}<br>
+        <strong>Energy:</strong> ${player.energy}/${player.maxEnergy}<br>
+        <strong>VIP:</strong> ${player.vipLevel}
+    `;
+}
+
+function testSave() {
+
+    player.balance += 100;
+    player.totalMined += 100;
+    player.xp += 10;
+
+    BabyShibaStorage.save(player);
+
+    showPlayer();
+}
+
+function testClear() {
+
+    BabyShibaStorage.clear();
+
+    player = BabyShibaPlayer.createPlayer();
+
+    showPlayer();
+}
+
+function startTest() {
+
+    const saved =
+        BabyShibaStorage.load();
+
+    if (saved) {
+
+        player =
+            BabyShibaPlayer.normalizePlayer(saved);
+
+    } else {
+
+        player =
+            BabyShibaPlayer.createPlayer();
+
+    }
+
+    showPlayer();
+}
+
+startTest();
+
+</script>
+
+</body>
+  </html>
